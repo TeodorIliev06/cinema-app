@@ -1,12 +1,20 @@
 namespace CinemaApp.Web
 {
+    using Microsoft.EntityFrameworkCore;
+
+    using Data;
+
     public class Program
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            string connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
             // Add services to the container.
+            builder.Services.AddDbContext<CinemaDbContext>(cfg => 
+                cfg.UseSqlServer(connectionString));
+
             builder.Services.AddControllersWithViews();
 
             var app = builder.Build();
