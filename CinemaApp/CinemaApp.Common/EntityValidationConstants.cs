@@ -15,10 +15,19 @@ namespace CinemaApp.Common
             public const int GenreMaxLength = 20;
             public const int DurationMinValue = 1;
             public const int DurationMaxValue = 500;
+            public const string ReleaseDateFormat = "MM/yyyy";
             public const int DirectorNameMinLength = 10;
             public const int DirectorNameMaxLength = 80;
             public const int DescriptionMinLength = 50;
             public const int DescriptionMaxLength = 500;
+        }
+
+        public static class Cinema
+        {
+            public const int NameMinLength = 5;
+            public const int NameMaxLength = 50;
+            public const int LocationMinLength = 3;
+            public const int LocationMaxLength = 85;
         }
     }
 }

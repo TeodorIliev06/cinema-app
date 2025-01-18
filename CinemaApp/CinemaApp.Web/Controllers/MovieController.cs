@@ -1,11 +1,14 @@
 ﻿namespace CinemaApp.Web.Controllers
 {
     using System.Globalization;
-    using CinemaApp.Web.ViewModels.Movie;
+
     using Microsoft.AspNetCore.Mvc;
 
     using Data;
     using Data.Models;
+    using ViewModels.Movie;
+
+    using static Common.EntityValidationConstants.Movie;
 
     public class MovieController : Controller
     {
@@ -36,11 +39,11 @@
         public IActionResult Create(AddMovieFormModel model)
         {
             bool isReleaseDateValid = DateTime
-                .TryParseExact(model.ReleaseDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime releaseDate);
+                .TryParseExact(model.ReleaseDate, ReleaseDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime releaseDate);
 
             if (!isReleaseDateValid)
             {
-                this.ModelState.AddModelError(nameof(model.ReleaseDate), "The release date must be in the following format: dd/MM/yyyy");
+                this.ModelState.AddModelError(nameof(model.ReleaseDate), $"The release date must be in the following format: {ReleaseDateFormat}");
             }
 
             if (this.ModelState.IsValid)

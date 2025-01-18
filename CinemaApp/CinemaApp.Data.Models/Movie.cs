@@ -2,12 +2,7 @@
 {
     public class Movie
     {
-        public Movie()
-        {
-            this.Id = Guid.NewGuid();
-        }
-
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
 
         public string Title { get; set; } = null!;
 
@@ -20,5 +15,8 @@
         public int Duration { get; set; }
 
         public string Description { get; set; } = null!;
+
+        public virtual ICollection<CinemaMovie> CinemaMovies { get; set; } 
+            = new HashSet<CinemaMovie>();
     }
 }

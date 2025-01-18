@@ -38,7 +38,7 @@
                 .HasData(this.SeedMovies());
         }
 
-        private List<Movie> SeedMovies()
+        private IEnumerable<Movie> SeedMovies()
         {
             var movies = new List<Movie>()
             {
