@@ -10,19 +10,13 @@
 
     using static Common.EntityValidationConstants.Movie;
 
-    public class MovieController : Controller
+    public class MovieController(CinemaDbContext dbContext) : Controller
     {
-        private readonly CinemaDbContext dbContext;
-
-        public MovieController(CinemaDbContext dbContext)
-        {
-            this.dbContext = dbContext;
-        }
 
         [HttpGet]
         public IActionResult Index()
         {
-            IEnumerable<Movie> movies = this.dbContext
+            IEnumerable<Movie> movies = dbContext
                 .Movies
                 .ToList();
 
@@ -46,7 +40,7 @@
                 this.ModelState.AddModelError(nameof(model.ReleaseDate), $"The release date must be in the following format: {ReleaseDateFormat}");
             }
 
-            if (this.ModelState.IsValid)
+            if (!this.ModelState.IsValid)
             {
                 return View(model);
             }
@@ -61,8 +55,8 @@
                 Description = model.Description
             };
 
-            this.dbContext.Movies.Add(movie);
-            this.dbContext.SaveChanges();
+            dbContext.Movies.Add(movie);
+            dbContext.SaveChanges();
 
             return RedirectToAction(nameof(Index));
         }
@@ -77,7 +71,7 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            var movie = this.dbContext
+            var movie = dbContext
                 .Movies
                 .FirstOrDefault(m => m.Id == guid);
 
