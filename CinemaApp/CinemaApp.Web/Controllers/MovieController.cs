@@ -1,16 +1,18 @@
 ﻿namespace CinemaApp.Web.Controllers
 {
     using System.Globalization;
-
+    using CinemaApp.Web.ViewModels.Cinema;
     using Microsoft.AspNetCore.Mvc;
 
     using Data;
     using Data.Models;
+    using Microsoft.EntityFrameworkCore;
     using ViewModels.Movie;
 
     using static Common.EntityValidationConstants.Movie;
+    using static Common.EntityValidationMessages.Cinema;
 
-    public class MovieController(CinemaDbContext dbContext) : Controller
+    public class MovieController(CinemaDbContext dbContext) : BaseController
     {
 
         [HttpGet]
@@ -62,9 +64,11 @@
         }
 
         [HttpGet]
-        public IActionResult Details(string id)
+        public IActionResult Details(string? id)
         {
-            bool isGuidValid = Guid.TryParse(id, out Guid guid);
+            var movieGuid = Guid.Empty;
+
+            bool isGuidValid = this.IsGuidValid(id, ref movieGuid);
 
             if (!isGuidValid)
             {
@@ -73,7 +77,7 @@
 
             var movie = dbContext
                 .Movies
-                .FirstOrDefault(m => m.Id == guid);
+                .FirstOrDefault(m => m.Id == movieGuid);
 
             if (movie == null)
             {
@@ -81,6 +85,116 @@
             }
 
             return View(movie);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> AddToProgram(string? id)
+        {
+            var movieGuid = Guid.Empty;
+            bool isGuidValid = this.IsGuidValid(id, ref movieGuid);
+
+            if (!isGuidValid)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var movie = await dbContext
+                .Movies
+                .FirstOrDefaultAsync(m => m.Id == movieGuid);
+
+            if (movie == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var viewModel = new AddMovieToCinemaViewModel()
+            {
+                Id = id!,
+                Title = movie.Title,
+                Cinemas = await dbContext
+                    .Cinemas
+                    .Include(c => c.CinemaMovies)
+                    .ThenInclude(cm => cm.Movie)
+                    .Select(c => new CinemaCheckBoxItemDto()
+                    {
+                        Id = c.Id.ToString(),
+                        Name = c.Name,
+                        Location = c.Location,
+                        IsSelected = c.CinemaMovies
+                            .Any(cm => cm.Movie.Id == movieGuid)
+                    })
+                    .ToListAsync()
+            };
+
+            //Create the view model
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddToProgram(AddMovieToCinemaViewModel model)
+        {
+            if (!this.ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var movieGuid = Guid.Empty;
+            bool isGuidValid = this.IsGuidValid(model.Id, ref movieGuid);
+
+            if (!isGuidValid)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var movie = await dbContext
+                .Movies
+                .FirstOrDefaultAsync(m => m.Id == movieGuid);
+
+            if (movie == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var entitiesToAdd = new List<CinemaMovie>();
+            foreach (var viewModel in model.Cinemas)
+            {
+                var cinemaGuid = Guid.Empty;
+                bool isCinemaGuidValid = this.IsGuidValid(viewModel.Id, ref cinemaGuid);
+
+                if (!isCinemaGuidValid)
+                {
+                    this.ModelState.AddModelError(String.Empty, InvalidCinemaIdMessage);
+                    return View(model);
+                }
+
+                var cinema = await dbContext
+                    .Cinemas
+                    .FirstOrDefaultAsync(c => c.Id == cinemaGuid);
+
+                if (cinema == null)
+                {
+                    this.ModelState.AddModelError(String.Empty, InvalidCinemaIdMessage);
+                    return View(model);
+                }
+
+                if (viewModel.IsSelected)
+                {
+                    entitiesToAdd.Add(new CinemaMovie()
+                    {
+                        Cinema = cinema,
+                        Movie = movie
+                    });
+                }
+                else
+                {
+                    //TODO: Implement deletion
+                }
+            }
+
+            await dbContext.CinemasMovies.AddRangeAsync(entitiesToAdd);
+            await dbContext.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index), "Cinema");
         }
     }
 }

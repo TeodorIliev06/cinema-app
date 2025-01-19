@@ -10,5 +10,10 @@
             public const string DirectorRequiredMessage = "Director name is required.";
             public const string DurationRequiredMessage = "Please specify movie duration.";
         }
+
+        public class Cinema
+        {
+            public const string InvalidCinemaIdMessage = "Invalid cinema selected!";
+        }
     }
 }
