@@ -1,12 +1,12 @@
 ﻿namespace CinemaApp.Web.Controllers
 {
-    using CinemaApp.Data.Models;
-    using CinemaApp.Web.ViewModels.Cinema;
-    using CinemaApp.Web.ViewModels.Movie;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
 
     using Data;
-    using Microsoft.EntityFrameworkCore;
+    using Data.Models;
+    using Web.ViewModels.Movie;
+    using Web.ViewModels.Cinema;
 
     public class CinemaController(CinemaDbContext dbContext) : BaseController
     {
@@ -80,6 +80,7 @@
                 Name = cinema.Name,
                 Location = cinema.Location,
                 Movies = cinema.CinemaMovies
+                    .Where(cm => cm.IsDeleted == false)
                     .Select(cm => new CinemaMovieViewModel()
                     {
                         Title = cm.Movie.Title,

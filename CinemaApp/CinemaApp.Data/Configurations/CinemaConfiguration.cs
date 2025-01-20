@@ -4,6 +4,7 @@
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
     using Models;
+    using Extensions;
 
     using static Common.EntityValidationConstants.Cinema;
     public class CinemaConfiguration : IEntityTypeConfiguration<Cinema>
@@ -24,26 +25,7 @@
                 .HasMaxLength(LocationMaxLength);
 
             builder
-                .HasData(this.SeedCinemas());
-        }
-
-        private IEnumerable<Cinema> SeedCinemas()
-        {
-            var cinemas = new List<Cinema>()
-            {
-                new Cinema
-                {
-                    Name = "Starlight Cinema",
-                    Location = "123 Main Street, Springfield"
-                },
-                new Cinema
-                {
-                    Name = "Galaxy Theaters",
-                    Location = "456 Elm Street, Metropolis"
-                }
-            };
-
-            return cinemas;
+                .SeedDataFromJson("Datasets/cinemas.json");
         }
     }
 }

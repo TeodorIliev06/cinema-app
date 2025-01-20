@@ -121,7 +121,9 @@
                         Name = c.Name,
                         Location = c.Location,
                         IsSelected = c.CinemaMovies
-                            .Any(cm => cm.Movie.Id == movieGuid)
+                            .Any(cm => 
+                                cm.Movie.Id == movieGuid &&
+                                cm.IsDeleted == false)
                     })
                     .ToListAsync()
             };
@@ -177,17 +179,33 @@
                     return View(model);
                 }
 
+                var cinemaMovie = await dbContext
+                    .CinemasMovies
+                    .FirstOrDefaultAsync(cm =>
+                        cm.MovieId == movieGuid &&
+                        cm.CinemaId == cinemaGuid);
+
                 if (viewModel.IsSelected)
                 {
-                    entitiesToAdd.Add(new CinemaMovie()
+                    if (cinemaMovie == null)
                     {
-                        Cinema = cinema,
-                        Movie = movie
-                    });
+                        entitiesToAdd.Add(new CinemaMovie()
+                        {
+                            Cinema = cinema,
+                            Movie = movie
+                        });
+                    }
+                    else
+                    {
+                        cinemaMovie.IsDeleted = false;
+                    }
                 }
                 else
                 {
-                    //TODO: Implement deletion
+                    if (cinemaMovie != null)
+                    {
+                        cinemaMovie.IsDeleted = true;
+                    }
                 }
             }
 

@@ -4,6 +4,7 @@
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
     using Models;
+    using Extensions;
 
     public class CinemaMovieConfiguration : IEntityTypeConfiguration<CinemaMovie>
     {
@@ -11,6 +12,10 @@
         {
             builder
                 .HasKey(cm => new { cm.CinemaId, cm.MovieId });
+
+            builder
+                .Property(cm => cm.IsDeleted)
+                .HasDefaultValue(false);
 
             builder
                 .HasOne(cm => cm.Movie)
@@ -23,6 +28,9 @@
                 .WithMany(c => c.CinemaMovies)
                 .HasForeignKey(cm => cm.CinemaId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .SeedDataFromJson("Datasets/cinemasMovies.json");
         }
     }
 }

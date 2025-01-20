@@ -1,0 +1,47 @@
+[
+  {
+    "Id": "6b12f8a7-d4c8-41b9-8f3d-9c6e7d8f45c2",
+    "Title": "The Great Adventure",
+    "Genre": "Adventure",
+    "ReleaseDate": "2023-12-15T00:00:00",
+    "Director": "John Smith",
+    "Duration": 120,
+    "Description": "An epic journey through uncharted territories."
+  },
+  {
+    "Id": "8c9e3d67-4a53-4b95-b8f3-6c7d8f4a9c5e",
+    "Title": "Laugh Out Loud",
+    "Genre": "Comedy",
+    "ReleaseDate": "2022-05-01T00:00:00",
+    "Director": "Jane Doe",
+    "Duration": 90,
+    "Description": "A hilarious take on everyday life."
+  },
+  {
+    "Id": "f8b4c67d-d912-4e5c-8b3c-6e7d45c3b9f4",
+    "Title": "Mystery of the Depths",
+    "Genre": "Mystery",
+    "ReleaseDate": "2024-08-20T00:00:00",
+    "Director": "Chris Lee",
+    "Duration": 140,
+    "Description": "A suspenseful thriller unraveling secrets of the deep sea."
+  },
+  {
+    "Id": "9c8b7e45-df8c-412c-9b3e-7d8f4b6c9f3d",
+    "Title": "Future Shock",
+    "Genre": "Science Fiction",
+    "ReleaseDate": "2025-03-10T00:00:00",
+    "Director": "Sophia Cheng",
+    "Duration": 115,
+    "Description": "A thought-provoking journey through a dystopian future."
+  },
+  {
+    "Id": "4a8c9b3e-7f8c-45c6-8d9b-c3e7f9b4a6d8",
+    "Title": "Dancing in the Rain",
+    "Genre": "Romance",
+    "ReleaseDate": "2021-07-22T00:00:00",
+    "Director": "Michael Brown",
+    "Duration": 105,
+    "Description": "A heartwarming story of love and resilience."
+  }
+]

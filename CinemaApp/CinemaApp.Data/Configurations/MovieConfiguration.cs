@@ -4,6 +4,7 @@
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
     using Models;
+    using Extensions;
 
     using static Common.EntityValidationConstants.Movie;
 
@@ -35,34 +36,7 @@
                 .HasMaxLength(DescriptionMaxLength);
 
             builder
-                .HasData(this.SeedMovies());
-        }
-
-        private IEnumerable<Movie> SeedMovies()
-        {
-            var movies = new List<Movie>()
-            {
-                new Movie
-                {
-                    Title = "Inception",
-                    Genre = "Sci-Fi",
-                    ReleaseDate = new DateTime(2010, 7, 16),
-                    Director = "Christopher Nolan",
-                    Duration = 148,
-                    Description = "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO."
-                },
-                new Movie
-                {
-                    Title = "The Dark Knight",
-                    Genre = "Action",
-                    ReleaseDate = new DateTime(2008, 7, 18),
-                    Director = "Christopher Nolan",
-                    Duration = 152,
-                    Description = "When the menace known as The Joker emerges from his mysterious past, he wreaks havoc and chaos on the people of Gotham."
-                }
-            };
-
-            return movies;
+                .SeedDataFromJson("Datasets/movies.json");
         }
     }
 }

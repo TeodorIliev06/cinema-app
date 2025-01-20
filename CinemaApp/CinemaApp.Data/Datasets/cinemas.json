@@ -1,0 +1,27 @@
+[
+  {
+    "Id": "ae3b4c7d-3b95-4a84-a6b3-18c8b4d8f45d",
+    "Name": "Grand Central Cinema",
+    "Location": "123 Main Street, New York"
+  },
+  {
+    "Id": "9a67f8cb-8b3c-4f53-9429-d7b4c912f3b1",
+    "Name": "Sunset Boulevard Theater",
+    "Location": "456 Sunset Blvd, Los Angeles"
+  },
+  {
+    "Id": "d8346e8e-392c-4872-9c9e-d3c6e8e5b784",
+    "Name": "Downtown Cineplex",
+    "Location": "789 Broadway, Chicago"
+  },
+  {
+    "Id": "c4e8c967-b54f-4c53-96b8-f8bcd6e9c4c5",
+    "Name": "Oceanview Cinema",
+    "Location": "101 Coastal Road, Miami"
+  },
+  {
+    "Id": "fb4c8e3d-4a53-4c67-95b9-e3d4c912f8a7",
+    "Name": "Maple Leaf Theater",
+    "Location": "202 Maple Avenue, Toronto"
+  }
+]
