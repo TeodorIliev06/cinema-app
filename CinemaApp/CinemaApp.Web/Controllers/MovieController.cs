@@ -16,11 +16,11 @@
     {
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            IEnumerable<Movie> movies = dbContext
+            IEnumerable<Movie> movies = await dbContext
                 .Movies
-                .ToList();
+                .ToListAsync();
 
             return View(movies);
         }
@@ -32,7 +32,7 @@
         }
 
         [HttpPost]
-        public IActionResult Create(AddMovieFormModel model)
+        public async Task<IActionResult> Create(AddMovieFormModel model)
         {
             bool isReleaseDateValid = DateTime
                 .TryParseExact(model.ReleaseDate, ReleaseDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime releaseDate);
@@ -57,14 +57,14 @@
                 Description = model.Description
             };
 
-            dbContext.Movies.Add(movie);
-            dbContext.SaveChanges();
+            await dbContext.Movies.AddAsync(movie);
+            await dbContext.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
-        public IActionResult Details(string? id)
+        public async Task<IActionResult> Details(string? id)
         {
             var movieGuid = Guid.Empty;
 
@@ -75,9 +75,9 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            var movie = dbContext
+            var movie =  await dbContext
                 .Movies
-                .FirstOrDefault(m => m.Id == movieGuid);
+                .FirstOrDefaultAsync(m => m.Id == movieGuid);
 
             if (movie == null)
             {
