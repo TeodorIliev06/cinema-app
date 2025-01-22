@@ -21,14 +21,18 @@ namespace CinemaApp.Web
             builder.Services.AddDbContext<CinemaDbContext>(cfg => 
                 cfg.UseSqlServer(connectionString));
 
-            builder.Services.AddDefaultIdentity<ApplicationUser>(cfg =>
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(cfg =>
                 {
 
                 })
+                .AddEntityFrameworkStores<CinemaDbContext>()
                 .AddRoles<IdentityRole<Guid>>()
-                .AddEntityFrameworkStores<CinemaDbContext>();
+                .AddSignInManager<SignInManager<ApplicationUser>>()
+                .AddUserManager<UserManager<ApplicationUser>>();
+                //.AddUserStore<ApplicationUser>();
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddRazorPages();
 
             var app = builder.Build();
 
