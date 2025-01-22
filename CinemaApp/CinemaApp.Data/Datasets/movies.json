@@ -6,7 +6,8 @@
     "ReleaseDate": "2023-12-15T00:00:00",
     "Director": "John Smith",
     "Duration": 120,
-    "Description": "An epic journey through uncharted territories."
+    "Description": "An epic journey through uncharted territories.",
+    "ImageUrl": "https://i.scdn.co/image/ab67616d0000b27340e0cdfcc418ecc3fd23b605"
   },
   {
     "Id": "8c9e3d67-4a53-4b95-b8f3-6c7d8f4a9c5e",
@@ -15,7 +16,8 @@
     "ReleaseDate": "2022-05-01T00:00:00",
     "Director": "Jane Doe",
     "Duration": 90,
-    "Description": "A hilarious take on everyday life."
+    "Description": "A hilarious take on everyday life.",
+    "ImageUrl": "https://m.media-amazon.com/images/M/MV5BMTA0MjI5ODA3MjReQTJeQWpwZ15BbWU3MDI1NTE3Njc@._V1_.jpg"
   },
   {
     "Id": "f8b4c67d-d912-4e5c-8b3c-6e7d45c3b9f4",
@@ -24,7 +26,8 @@
     "ReleaseDate": "2024-08-20T00:00:00",
     "Director": "Chris Lee",
     "Duration": 140,
-    "Description": "A suspenseful thriller unraveling secrets of the deep sea."
+    "Description": "A suspenseful thriller unraveling secrets of the deep sea.",
+    "ImageUrl": "https://images.justwatch.com/poster/250567720/s718/from-the-depths-2020.jpg"
   },
   {
     "Id": "9c8b7e45-df8c-412c-9b3e-7d8f4b6c9f3d",
@@ -33,7 +36,8 @@
     "ReleaseDate": "2025-03-10T00:00:00",
     "Director": "Sophia Cheng",
     "Duration": 115,
-    "Description": "A thought-provoking journey through a dystopian future."
+    "Description": "A thought-provoking journey through a dystopian future.",
+    "ImageUrl": "https://m.media-amazon.com/images/M/MV5BMjk4OTkwOTA3NF5BMl5BanBnXkFtZTcwNTE3NzAzMQ@@._V1_FMjpg_UX1000_.jpg"
   },
   {
     "Id": "4a8c9b3e-7f8c-45c6-8d9b-c3e7f9b4a6d8",
@@ -42,6 +46,7 @@
     "ReleaseDate": "2021-07-22T00:00:00",
     "Director": "Michael Brown",
     "Duration": 105,
-    "Description": "A heartwarming story of love and resilience."
+    "Description": "A heartwarming story of love and resilience.",
+    "ImageUrl": "https://m.media-amazon.com/images/M/MV5BYjdiMGU5NmUtNDE1OS00NWViLTk4Y2QtZTIxYzdkNDFhZGM4XkEyXkFqcGc@._V1_.jpg"
   }
 ]

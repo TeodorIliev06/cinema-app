@@ -54,7 +54,8 @@
                 ReleaseDate = releaseDate,
                 Director = model.Director,
                 Duration = model.Duration,
-                Description = model.Description
+                Description = model.Description,
+                ImageUrl = model.ImageUrl
             };
 
             await dbContext.Movies.AddAsync(movie);

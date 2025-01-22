@@ -15,8 +15,12 @@
         public int Duration { get; set; }
 
         public string Description { get; set; } = null!;
+        public string? ImageUrl { get; set; }
 
         public virtual ICollection<CinemaMovie> CinemaMovies { get; set; } 
             = new HashSet<CinemaMovie>();
+
+        public virtual ICollection<ApplicationUserMovie> ApplicationUserMovies { get; set; }
+            = new HashSet<ApplicationUserMovie>();
     }
 }

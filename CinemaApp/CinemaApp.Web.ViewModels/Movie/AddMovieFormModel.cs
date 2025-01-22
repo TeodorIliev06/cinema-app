@@ -36,5 +36,8 @@
         [MinLength(DescriptionMinLength)]
         [MaxLength(DescriptionMaxLength)]
         public required string Description { get; set; } = null!;
+
+        [MaxLength(ImageUrlMaxLength)]
+        public string? ImageUrl { get; set; }
     }
 }

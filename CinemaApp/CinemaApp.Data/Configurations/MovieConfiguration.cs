@@ -7,6 +7,7 @@
     using Extensions;
 
     using static Common.EntityValidationConstants.Movie;
+    using static Common.ApplicationConstants;
 
     public class MovieConfiguration : IEntityTypeConfiguration<Movie>
     {
@@ -34,6 +35,12 @@
                 .Property(m => m.Description)
                 .IsRequired()
                 .HasMaxLength(DescriptionMaxLength);
+
+            builder
+                .Property(m => m.ImageUrl)
+                .IsRequired(false)
+                .HasMaxLength(ImageUrlMaxLength)
+                .HasDefaultValue(NoImageUrl);
 
             builder
                 .SeedDataFromJson("Datasets/movies.json");
