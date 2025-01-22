@@ -12,25 +12,12 @@ namespace CinemaApp.Web.Areas.Identity.Pages.Account
 {
     using Data.Models;
 
-    public class RegisterModel : PageModel
+    public class RegisterModel(
+        UserManager<ApplicationUser> userManager,
+        IUserStore<ApplicationUser> userStore,
+        SignInManager<ApplicationUser> signInManager,
+        ILogger<RegisterModel> logger) : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IUserStore<ApplicationUser> _userStore;
-        private readonly ILogger<RegisterModel> _logger;
-
-        public RegisterModel(
-            UserManager<ApplicationUser> userManager,
-            IUserStore<ApplicationUser> userStore,
-            SignInManager<ApplicationUser> signInManager,
-            ILogger<RegisterModel> logger)
-        {
-            _userManager = userManager;
-            _userStore = userStore;
-            _signInManager = signInManager;
-            _logger = logger;
-        }
-
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
@@ -89,27 +76,28 @@ namespace CinemaApp.Web.Areas.Identity.Pages.Account
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
             returnUrl ??= Url.Content("~/");
-            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            ExternalLogins = (await signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+                user.Email = Input.Email; // Quick fix, TODO: Generate user with valid email
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
-                var result = await _userManager.CreateAsync(user, Input.Password);
+                await userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+                var result = await userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    logger.LogInformation("User created a new account with password.");
 
-                    var userId = await _userManager.GetUserIdAsync(user);
+                    var userId = await userManager.GetUserIdAsync(user);
 
-                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    await signInManager.SignInAsync(user, isPersistent: false);
                     return LocalRedirect(returnUrl);
                 }
                 foreach (var error in result.Errors)
@@ -138,11 +126,11 @@ namespace CinemaApp.Web.Areas.Identity.Pages.Account
 
         private IUserEmailStore<ApplicationUser> GetEmailStore()
         {
-            if (!_userManager.SupportsUserEmail)
+            if (!userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<ApplicationUser>)_userStore;
+            return (IUserEmailStore<ApplicationUser>)userStore;
         }
     }
 }

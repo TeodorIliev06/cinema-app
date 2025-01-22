@@ -1,10 +1,7 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using CinemaApp.Data;
 namespace CinemaApp.Web
 {
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.AspNetCore.Identity;
+    using Microsoft.EntityFrameworkCore;
 
     using Data;
     using Data.Models;
@@ -18,18 +15,18 @@ namespace CinemaApp.Web
             string connectionString = builder.Configuration.GetConnectionString("DefaultConnection")!;
 
             // Add services to the container.
-            builder.Services.AddDbContext<CinemaDbContext>(cfg => 
+            builder.Services.AddDbContext<CinemaDbContext>(cfg =>
                 cfg.UseSqlServer(connectionString));
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(cfg =>
                 {
-
+                    IdentityOptionsConfigurator.Configure(builder, cfg);
                 })
                 .AddEntityFrameworkStores<CinemaDbContext>()
                 .AddRoles<IdentityRole<Guid>>()
                 .AddSignInManager<SignInManager<ApplicationUser>>()
                 .AddUserManager<UserManager<ApplicationUser>>();
-                //.AddUserStore<ApplicationUser>();
+            //.AddUserStore<ApplicationUser>();
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
