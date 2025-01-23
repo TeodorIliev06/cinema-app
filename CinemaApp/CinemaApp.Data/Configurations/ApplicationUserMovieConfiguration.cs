@@ -13,6 +13,10 @@
                 .HasKey(um => new { um.ApplicationUserId, um.MovieId });
 
             builder
+                .Property(um => um.IsDeleted)
+                .HasDefaultValue(false);
+
+            builder
                 .HasOne(um => um.Movie)
                 .WithMany(m => m.ApplicationUserMovies)
                 .HasForeignKey(um => um.MovieId);
