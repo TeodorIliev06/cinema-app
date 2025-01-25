@@ -38,6 +38,8 @@ namespace CinemaApp.Web
                 options.LoginPath = "/Identity/Account/Login";
             });
 
+            builder.Services.RegisterRepositories(typeof(ApplicationUser).Assembly);
+
             var app = builder.Build();
 
             AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).Assembly);
