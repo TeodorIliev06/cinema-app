@@ -1,6 +1,8 @@
 ﻿namespace CinemaApp.Data.Models
 {
-    public class Movie
+    using CinemaApp.Data.Models.Contracts;
+
+    public class Movie: ISoftDeletable
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
@@ -22,5 +24,7 @@
 
         public virtual ICollection<ApplicationUserMovie> ApplicationUserMovies { get; set; }
             = new HashSet<ApplicationUserMovie>();
+
+        public bool IsDeleted { get; set; }
     }
 }

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CinemaApp.Data.Models
+﻿namespace CinemaApp.Data.Models
 {
-    public class Cinema
+    using CinemaApp.Data.Models.Contracts;
+
+    public class Cinema : ISoftDeletable
     {
         public Guid Id { get; set; } = Guid.NewGuid();
 
@@ -14,7 +10,9 @@ namespace CinemaApp.Data.Models
 
         public string Location { get; set; } = null!;
 
-        public virtual ICollection<CinemaMovie> CinemaMovies { get; set; } 
+        public virtual ICollection<CinemaMovie> CinemaMovies { get; set; }
             = new HashSet<CinemaMovie>();
+
+        public bool IsDeleted { get; set; }
     }
 }

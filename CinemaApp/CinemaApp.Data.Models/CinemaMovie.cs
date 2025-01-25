@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CinemaApp.Data.Models
+﻿namespace CinemaApp.Data.Models
 {
-    public class CinemaMovie
+    using CinemaApp.Data.Models.Contracts;
+
+    public class CinemaMovie : ISoftDeletable
     {
         public Guid MovieId { get; set; }
 
