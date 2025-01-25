@@ -7,22 +7,14 @@
     using Data.Models;
     using Web.ViewModels.Movie;
     using Web.ViewModels.Cinema;
+    using Services.Data.Contracts;
 
-    public class CinemaController(CinemaDbContext dbContext) : BaseController
+    public class CinemaController(CinemaDbContext dbContext, ICinemaService cinemaService) : BaseController
     {
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            IEnumerable<CinemaIndexViewModel> cinemas = await dbContext
-                .Cinemas
-                .Select(c => new CinemaIndexViewModel()
-                {
-                    Id = c.Id.ToString(),
-                    Name = c.Name,
-                    Location = c.Location
-                })
-                .OrderBy(c => c.Location)
-                .ToListAsync();
+            var cinemas = await cinemaService.GetAllOrderedByLocationAsync();
 
             return View(cinemas);
         }
@@ -41,14 +33,7 @@
                 return View(model);
             }
 
-            var cinema = new Cinema()
-            {
-                Name = model.Name,
-                Location = model.Location
-            };
-
-            await dbContext.Cinemas.AddAsync(cinema);
-            await dbContext.SaveChangesAsync();
+            await cinemaService.AddCinemaAsync(model);
 
             return RedirectToAction(nameof(Index));
         }
@@ -56,38 +41,21 @@
         [HttpGet]
         public async Task<IActionResult> Details(string? id)
         {
-            var guid = Guid.Empty;
-            bool isIdValid = this.IsGuidValid(id, ref guid);
+            var cinemaGuid = Guid.Empty;
+            bool isIdValid = this.IsGuidValid(id, ref cinemaGuid);
 
             if (!isIdValid)
             {
                 return RedirectToAction(nameof(Index));
             }
 
-            var cinema = await dbContext
-                .Cinemas
-                .Include(c => c.CinemaMovies)
-                .ThenInclude(cm => cm.Movie)
-                .FirstOrDefaultAsync(c => c.Id == guid);
+            var viewModel = await cinemaService
+                .GetCinemaDetailsByIdAsync(cinemaGuid);
 
-            if (cinema == null)
+            if (viewModel == null)
             {
                 return RedirectToAction(nameof(Index));
             }
-
-            var viewModel = new CinemaDetailsViewModel()
-            {
-                Name = cinema.Name,
-                Location = cinema.Location,
-                Movies = cinema.CinemaMovies
-                    .Where(cm => cm.IsDeleted == false)
-                    .Select(cm => new CinemaMovieViewModel()
-                    {
-                        Title = cm.Movie.Title,
-                        Duration = cm.Movie.Duration,
-                    })
-                    .ToList()
-            };
 
             return View(viewModel);
         }

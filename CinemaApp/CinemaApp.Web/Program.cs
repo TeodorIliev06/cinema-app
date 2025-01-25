@@ -1,5 +1,7 @@
 namespace CinemaApp.Web
 {
+    using CinemaApp.Services.Data;
+    using CinemaApp.Services.Data.Contracts;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
@@ -39,6 +41,8 @@ namespace CinemaApp.Web
             });
 
             builder.Services.RegisterRepositories(typeof(ApplicationUser).Assembly);
+
+            builder.Services.AddScoped<ICinemaService, CinemaService>();
 
             var app = builder.Build();
 

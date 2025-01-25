@@ -37,7 +37,7 @@
             return await this.dbSet.ToArrayAsync();
         }
 
-        public IEnumerable<TType> GetAllAttached()
+        public IQueryable<TType> GetAllAttached()
         {
             return this.dbSet.AsQueryable();
         }
