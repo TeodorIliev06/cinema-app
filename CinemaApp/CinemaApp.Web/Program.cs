@@ -5,6 +5,8 @@ namespace CinemaApp.Web
 
     using Data;
     using Data.Models;
+    using Web.ViewModels;
+    using Services.Mapping;
     using Infrastructure.Extensions;
 
     public class Program
@@ -37,6 +39,8 @@ namespace CinemaApp.Web
             });
 
             var app = builder.Build();
+
+            AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).Assembly);
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
