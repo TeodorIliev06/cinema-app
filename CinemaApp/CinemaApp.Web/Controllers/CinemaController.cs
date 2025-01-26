@@ -1,15 +1,11 @@
 ﻿namespace CinemaApp.Web.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
 
-    using Data;
-    using Data.Models;
-    using Web.ViewModels.Movie;
     using Web.ViewModels.Cinema;
     using Services.Data.Contracts;
 
-    public class CinemaController(CinemaDbContext dbContext, ICinemaService cinemaService) : BaseController
+    public class CinemaController(ICinemaService cinemaService) : BaseController
     {
         [HttpGet]
         public async Task<IActionResult> Index()

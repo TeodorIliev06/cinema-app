@@ -1,26 +1,26 @@
 ﻿namespace CinemaApp.Web.Controllers
 {
     using System.Globalization;
-    using CinemaApp.Web.ViewModels.Cinema;
-    using Microsoft.AspNetCore.Mvc;
 
     using Data;
     using Data.Models;
-    using Microsoft.EntityFrameworkCore;
     using ViewModels.Movie;
+    using Web.ViewModels.Cinema;
+    using Services.Data.Contracts;
+
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
 
     using static Common.EntityValidationConstants.Movie;
     using static Common.EntityValidationMessages.Cinema;
 
-    public class MovieController(CinemaDbContext dbContext) : BaseController
+    public class MovieController(CinemaDbContext dbContext, IMovieService movieService) : BaseController
     {
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            IEnumerable<Movie> movies = await dbContext
-                .Movies
-                .ToListAsync();
+            var movies = await movieService.GetAllMoviesAsync();
 
             return View(movies);
         }
@@ -34,32 +34,17 @@
         [HttpPost]
         public async Task<IActionResult> Create(AddMovieFormModel model)
         {
-            bool isReleaseDateValid = DateTime
-                .TryParseExact(model.ReleaseDate, ReleaseDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime releaseDate);
-
-            if (!isReleaseDateValid)
-            {
-                this.ModelState.AddModelError(nameof(model.ReleaseDate), $"The release date must be in the following format: {ReleaseDateFormat}");
-            }
-
             if (!this.ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var movie = new Movie()
+            bool result = await movieService.AddMovieAsync(model);
+            if (result == false)
             {
-                Title = model.Title,
-                Genre = model.Genre,
-                ReleaseDate = releaseDate,
-                Director = model.Director,
-                Duration = model.Duration,
-                Description = model.Description,
-                ImageUrl = model.ImageUrl
-            };
-
-            await dbContext.Movies.AddAsync(movie);
-            await dbContext.SaveChangesAsync();
+                this.ModelState.AddModelError(nameof(model.ReleaseDate), $"The release date must be in the following format: {ReleaseDateFormat}");
+                return View(model);
+            }
 
             return RedirectToAction(nameof(Index));
         }
@@ -70,7 +55,6 @@
             var movieGuid = Guid.Empty;
 
             bool isGuidValid = this.IsGuidValid(id, ref movieGuid);
-
             if (!isGuidValid)
             {
                 return RedirectToAction(nameof(Index));
@@ -92,8 +76,8 @@
         public async Task<IActionResult> AddToProgram(string? id)
         {
             var movieGuid = Guid.Empty;
-            bool isGuidValid = this.IsGuidValid(id, ref movieGuid);
 
+            bool isGuidValid = this.IsGuidValid(id, ref movieGuid);
             if (!isGuidValid)
             {
                 return RedirectToAction(nameof(Index));
@@ -129,7 +113,6 @@
                     .ToListAsync()
             };
 
-            //Create the view model
             return View(viewModel);
         }
 
@@ -142,8 +125,8 @@
             }
 
             var movieGuid = Guid.Empty;
-            bool isGuidValid = this.IsGuidValid(model.Id, ref movieGuid);
 
+            bool isGuidValid = this.IsGuidValid(model.Id, ref movieGuid);
             if (!isGuidValid)
             {
                 return RedirectToAction(nameof(Index));

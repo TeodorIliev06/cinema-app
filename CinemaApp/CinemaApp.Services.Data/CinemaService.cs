@@ -1,14 +1,15 @@
 ﻿namespace CinemaApp.Services.Data
 {
+    using System;
+
     using Mapping;
     using Contracts;
-    using CinemaApp.Data.Models;
+    using Web.ViewModels.Movie;
     using Web.ViewModels.Cinema;
+    using CinemaApp.Data.Models;
     using CinemaApp.Data.Repositories.Contracts;
 
     using Microsoft.EntityFrameworkCore;
-    using CinemaApp.Web.ViewModels.Movie;
-    using System;
 
     public class CinemaService(IRepository<Cinema, Guid> cinemaRepository) : ICinemaService
     {
