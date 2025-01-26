@@ -1,10 +1,14 @@
-﻿namespace CinemaApp.Services.Data
-{
-    using Contracts;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-    public class BaseService : IBaseService
+namespace CinemaApp.Common
+{
+    public static class ValidationUtils
     {
-        public bool IsGuidValid(string? id, ref Guid guid)
+        public static bool IsGuidValid(string? id, ref Guid guid)
         {
             if (String.IsNullOrWhiteSpace(id))
             {

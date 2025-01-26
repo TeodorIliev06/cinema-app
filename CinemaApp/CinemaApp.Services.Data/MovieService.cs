@@ -1,9 +1,9 @@
 ﻿namespace CinemaApp.Services.Data
 {
     using System.Globalization;
-
     using Microsoft.EntityFrameworkCore;
 
+    using CinemaApp.Common;
     using CinemaApp.Data.Models;
     using CinemaApp.Services.Mapping;
     using CinemaApp.Web.ViewModels.Movie;
@@ -16,7 +16,7 @@
     public class MovieService(
         IRepository<Movie, Guid> movieRepository,
         IRepository<Cinema, Guid> cinemaRepository,
-        IRepository<CinemaMovie, object> cinemaMovieRepository) : BaseService, IMovieService
+        IRepository<CinemaMovie, object> cinemaMovieRepository) : IMovieService
     {
         public async Task<IEnumerable<AllMoviesViewModel>> GetAllMoviesAsync()
         {
@@ -105,7 +105,7 @@
             foreach (var viewModel in model.Cinemas)
             {
                 var cinemaGuid = Guid.Empty;
-                bool isCinemaGuidValid = this.IsGuidValid(viewModel.Id, ref cinemaGuid);
+                bool isCinemaGuidValid = ValidationUtils.IsGuidValid(viewModel.Id, ref cinemaGuid);
 
                 if (!isCinemaGuidValid)
                 {

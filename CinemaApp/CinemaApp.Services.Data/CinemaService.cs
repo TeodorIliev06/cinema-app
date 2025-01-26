@@ -2,16 +2,16 @@
 {
     using System;
 
-    using Mapping;
-    using Contracts;
-    using Web.ViewModels.Movie;
-    using Web.ViewModels.Cinema;
-    using CinemaApp.Data.Models;
-    using CinemaApp.Data.Repositories.Contracts;
-
     using Microsoft.EntityFrameworkCore;
 
-    public class CinemaService(IRepository<Cinema, Guid> cinemaRepository) : BaseService, ICinemaService
+    using CinemaApp.Data.Models;
+    using CinemaApp.Services.Mapping;
+    using CinemaApp.Web.ViewModels.Movie;
+    using CinemaApp.Web.ViewModels.Cinema;
+    using CinemaApp.Services.Data.Contracts;
+    using CinemaApp.Data.Repositories.Contracts;
+
+    public class CinemaService(IRepository<Cinema, Guid> cinemaRepository) : ICinemaService
     {
         public async Task<IEnumerable<CinemaIndexViewModel>> GetAllOrderedByLocationAsync()
         {

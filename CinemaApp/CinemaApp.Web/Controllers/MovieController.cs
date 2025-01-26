@@ -2,8 +2,9 @@
 {
     using Microsoft.AspNetCore.Mvc;
 
-    using Services.Data.Contracts;
+    using Common;
     using ViewModels.Movie;
+    using Services.Data.Contracts;
 
     using static Common.EntityValidationConstants.Movie;
 
@@ -46,7 +47,7 @@
         {
             var movieGuid = Guid.Empty;
 
-            bool isGuidValid = this.IsGuidValid(id, ref movieGuid);
+            bool isGuidValid = ValidationUtils.IsGuidValid(id, ref movieGuid);
             if (!isGuidValid)
             {
                 return RedirectToAction(nameof(Index));
@@ -66,7 +67,7 @@
         {
             var movieGuid = Guid.Empty;
 
-            bool isGuidValid = this.IsGuidValid(id, ref movieGuid);
+            bool isGuidValid = ValidationUtils.IsGuidValid(id, ref movieGuid);
             if (!isGuidValid)
             {
                 return RedirectToAction(nameof(Index));
@@ -92,7 +93,7 @@
 
             var movieGuid = Guid.Empty;
 
-            bool isGuidValid = this.IsGuidValid(model.Id, ref movieGuid);
+            bool isGuidValid = ValidationUtils.IsGuidValid(model.Id, ref movieGuid);
             if (!isGuidValid)
             {
                 return RedirectToAction(nameof(Index));

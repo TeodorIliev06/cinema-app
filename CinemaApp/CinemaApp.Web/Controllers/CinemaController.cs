@@ -2,6 +2,7 @@
 {
     using Microsoft.AspNetCore.Mvc;
 
+    using Common;
     using Web.ViewModels.Cinema;
     using Services.Data.Contracts;
 
@@ -38,7 +39,7 @@
         public async Task<IActionResult> Details(string? id)
         {
             var cinemaGuid = Guid.Empty;
-            bool isIdValid = this.IsGuidValid(id, ref cinemaGuid);
+            bool isIdValid = ValidationUtils.IsGuidValid(id, ref cinemaGuid);
 
             if (!isIdValid)
             {
