@@ -7,5 +7,11 @@
         Task<IEnumerable<AllMoviesViewModel>> GetAllMoviesAsync();
 
         Task<bool> AddMovieAsync(AddMovieFormModel model);
+
+        Task<MovieDetailsViewModel?> GetMovieDetailsByIdAsync(Guid id);
+
+        Task<AddMovieToCinemaViewModel?> GetAddMovieToCinemaViewModelByIdAsync(Guid id);
+
+        Task<bool> AddMovieToCinemasAsync(Guid movieId, AddMovieToCinemaViewModel model);
     }
 }

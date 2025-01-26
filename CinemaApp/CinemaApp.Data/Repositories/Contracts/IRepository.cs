@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CinemaApp.Data.Repositories.Contracts
+﻿namespace CinemaApp.Data.Repositories.Contracts
 {
+    using System.Linq.Expressions;
+
     public interface IRepository<TType, TId>
     {
         TType? GetById(TId id);
 
         Task<TType?> GetByIdAsync(TId id);
+
+        TType? FirstOrDefault(Func<TType, bool> predicate);
+
+        Task<TType?> FirstOrDefaultAsync(Expression<Func<TType, bool>> predicate);
 
         IEnumerable<TType> GetAll();
 
@@ -21,6 +21,10 @@ namespace CinemaApp.Data.Repositories.Contracts
         void Add(TType item);
 
         Task AddAsync(TType item);
+
+        void AddRange(TType[] items);
+
+        Task AddRangeAsync(TType[] items);
 
         bool Delete(TId id);
 

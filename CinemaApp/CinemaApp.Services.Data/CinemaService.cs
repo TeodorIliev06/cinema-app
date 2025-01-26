@@ -11,7 +11,7 @@
 
     using Microsoft.EntityFrameworkCore;
 
-    public class CinemaService(IRepository<Cinema, Guid> cinemaRepository) : ICinemaService
+    public class CinemaService(IRepository<Cinema, Guid> cinemaRepository) : BaseService, ICinemaService
     {
         public async Task<IEnumerable<CinemaIndexViewModel>> GetAllOrderedByLocationAsync()
         {
