@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CinemaApp.Services.Data
+﻿namespace CinemaApp.Services.Data
 {
-    using CinemaApp.Data.Models;
-    using CinemaApp.Data.Repositories.Contracts;
-    using CinemaApp.Services.Data.Contracts;
-    using CinemaApp.Services.Mapping;
-    using CinemaApp.Web.ViewModels.Watchlist;
-    using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
 
-    using static Common.EntityValidationConstants.Movie;
+    using CinemaApp.Data.Models;
+    using CinemaApp.Services.Mapping;
+    using CinemaApp.Services.Data.Contracts;
+    using CinemaApp.Web.ViewModels.Watchlist;
+    using CinemaApp.Data.Repositories.Contracts;
 
     public class WatchlistService(
         IRepository<ApplicationUserMovie, object> userMovieRepository,
@@ -76,3 +68,34 @@ namespace CinemaApp.Services.Data
             return true;
         }
 
+        public async Task<bool> RemoveMovieFromUserWatchlistAsync(Guid movieGuid, string userId)
+        {
+            var movie = await movieRepository
+                .GetByIdAsync(movieGuid);
+
+            if (movie == null)
+            {
+                return false;
+            }
+
+            var userGuid = Guid.Parse(userId);
+
+            var applicationUserMovie = await userMovieRepository
+                .GetAllAttached()
+                .Where(um => um.IsDeleted == false)
+                .FirstOrDefaultAsync(um =>
+                    um.MovieId == movieGuid &&
+                    um.ApplicationUserId == userGuid);
+
+            if (applicationUserMovie != null)
+            {
+                applicationUserMovie.IsDeleted = true;
+                var updateSuccess = await userMovieRepository.UpdateAsync(applicationUserMovie);
+
+                return updateSuccess;
+            }
+
+            return true;
+        }
+    }
+}

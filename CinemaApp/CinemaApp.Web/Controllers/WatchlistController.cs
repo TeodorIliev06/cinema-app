@@ -1,22 +1,17 @@
 ﻿namespace CinemaApp.Web.Controllers
 {
-    using CinemaApp.Common;
-    using CinemaApp.Services.Data.Contracts;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Identity;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.AspNetCore.Authorization;
 
-    using Data;
     using Data.Models;
-    using ViewModels.Watchlist;
+    using CinemaApp.Common;
+    using CinemaApp.Services.Data.Contracts;
 
-    using static Common.EntityValidationConstants.Movie;
     using static Common.ErrorMessages.Watchlist;
 
     [Authorize]
     public class WatchlistController(
-        CinemaDbContext dbContext,
         IWatchlistService watchlistService,
         UserManager<ApplicationUser> userManager) : BaseController
     {
@@ -67,35 +62,24 @@
         {
             var movieGuid = Guid.Empty;
 
-            bool isGuidValid = this.IsGuidValid(movieId, ref movieGuid);
+            bool isGuidValid = ValidationUtils.IsGuidValid(movieId, ref movieGuid);
 
             if (!isGuidValid)
             {
                 return RedirectToAction("Index", "Movie");
             }
 
-            var movie = await dbContext
-                .Movies
-                .FirstOrDefaultAsync(m => m.Id == movieGuid);
-
-            if (movie == null)
+            string userId = userManager.GetUserId(User)!;
+            if (string.IsNullOrWhiteSpace(userId))
             {
-                return RedirectToAction("Index", "Movie");
+                return RedirectToPage("/Identity/Account/Login");
             }
 
-            var userGuid = Guid.Parse(userManager.GetUserId(this.User)!);
-
-            var applicationUserMovie = await dbContext
-                .UsersMovies
-                .Where(um => um.IsDeleted == false)
-                .FirstOrDefaultAsync(um =>
-                    um.MovieId == movieGuid &&
-                    um.ApplicationUserId == userGuid);
-
-            if (applicationUserMovie != null)
+            bool result = await watchlistService.RemoveMovieFromUserWatchlistAsync(movieGuid, userId);
+            if (result == false)
             {
-                applicationUserMovie.IsDeleted = true;
-                await dbContext.SaveChangesAsync();
+                TempData["ErrorMessage"] = RemoveFromWatchlistNotSuccessfulMessage;
+                return RedirectToAction("Index", "Movie");
             }
 
             return RedirectToAction(nameof(Index));

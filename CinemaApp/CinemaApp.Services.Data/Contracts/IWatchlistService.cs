@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CinemaApp.Services.Data.Contracts
+﻿namespace CinemaApp.Services.Data.Contracts
 {
     using CinemaApp.Web.ViewModels.Watchlist;
 
@@ -13,5 +7,6 @@ namespace CinemaApp.Services.Data.Contracts
         Task<IEnumerable<ApplicationUserWatchlistViewModel>> GetUserWatchlistByUserIdAsync(string userId);
 
         Task<bool> AddMovieToUserWatchlistAsync(Guid movieGuid, string userId);
+        Task<bool> RemoveMovieFromUserWatchlistAsync(Guid movieGuid, string userId);
     }
 }
