@@ -22,10 +22,10 @@
 	{
 		<tr>
 			<td>
-				<img src="@movie.ImageUrl" alt="@movie.Title" width="100" />
+				<img src="@movie.MovieImageUrl" alt="@movie.MovieTitle" width="100" />
 			</td>
-			<td>@movie.Title</td>
-			<td>@movie.Genre</td>
+			<td>@movie.MovieTitle</td>
+			<td>@movie.MovieGenre</td>
 			<td>@movie.ReleaseDate</td>
 			<td>
 				<form asp-controller="Watchlist" asp-action="RemoveFromWatchlist" method="post" class="d-inline">

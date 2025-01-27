@@ -1,5 +1,7 @@
 ﻿namespace CinemaApp.Web.Controllers
 {
+    using CinemaApp.Common;
+    using CinemaApp.Services.Data.Contracts;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.EntityFrameworkCore;
@@ -10,33 +12,25 @@
     using ViewModels.Watchlist;
 
     using static Common.EntityValidationConstants.Movie;
+    using static Common.ErrorMessages.Watchlist;
 
     [Authorize]
     public class WatchlistController(
         CinemaDbContext dbContext,
+        IWatchlistService watchlistService,
         UserManager<ApplicationUser> userManager) : BaseController
     {
         [HttpGet]
         public async Task<IActionResult> Index()
         {
             string userId = userManager.GetUserId(User)!;
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return RedirectToPage("/Identity/Account/Login");
+            }
 
-            var model = await dbContext
-                .UsersMovies
-                .Include(um => um.Movie)
-                .Where(um =>
-                    um.ApplicationUserId.ToString().ToLower() ==
-                    userId.ToLower() &&
-                    um.IsDeleted == false)
-                .Select(um => new ApplicationUserWatchlistViewModel()
-                {
-                    MovieId = um.MovieId.ToString(),
-                    Title = um.Movie.Title,
-                    Genre = um.Movie.Genre,
-                    ReleaseDate = um.Movie.ReleaseDate.ToString(ReleaseDateFormat),
-                    ImageUrl = um.Movie.ImageUrl
-                })
-                .ToListAsync();
+            var model =
+                await watchlistService.GetUserWatchlistByUserIdAsync(userId);
 
             return View(model);
         }
@@ -46,48 +40,25 @@
         {
             var movieGuid = Guid.Empty;
 
-            bool isGuidValid = this.IsGuidValid(movieId, ref movieGuid);
-
+            bool isGuidValid = ValidationUtils.IsGuidValid(movieId, ref movieGuid);
             if (!isGuidValid)
             {
                 return RedirectToAction("Index", "Movie");
             }
 
-            var movie = await dbContext
-                .Movies
-                .FirstOrDefaultAsync(m => m.Id == movieGuid);
-
-            if (movie == null)
+            string userId = userManager.GetUserId(User)!;
+            if (string.IsNullOrWhiteSpace(userId))
             {
+                return RedirectToPage("/Identity/Account/Login");
+            }
+
+            bool result = await watchlistService.AddMovieToUserWatchlistAsync(movieGuid, userId);
+            if (result == false)
+            {
+                TempData["ErrorMessage"] = AddToWatchlistNotSuccessfulMessage;
                 return RedirectToAction("Index", "Movie");
             }
 
-            var userGuid = Guid.Parse(userManager.GetUserId(this.User)!);
-
-            //Seed applicationUserMovies in json.
-            var applicationUserMovie = await dbContext
-                .UsersMovies
-                .FirstOrDefaultAsync(um =>
-                    um.MovieId == movieGuid &&
-                    um.ApplicationUserId == userGuid);
-
-            if (applicationUserMovie == null)
-            {
-                var newUserMovie = new ApplicationUserMovie()
-                {
-                    ApplicationUserId = userGuid,
-                    MovieId = movieGuid,
-                    IsDeleted = false
-                };
-
-                await dbContext.UsersMovies.AddAsync(newUserMovie);
-            }
-            else if (applicationUserMovie.IsDeleted)
-            {
-                applicationUserMovie.IsDeleted = false;
-            }
-
-            await dbContext.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

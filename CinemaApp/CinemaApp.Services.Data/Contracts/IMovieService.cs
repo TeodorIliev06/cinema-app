@@ -8,10 +8,10 @@
 
         Task<bool> AddMovieAsync(AddMovieFormModel model);
 
-        Task<MovieDetailsViewModel?> GetMovieDetailsByIdAsync(Guid id);
+        Task<MovieDetailsViewModel?> GetMovieDetailsByIdAsync(Guid movieGuid);
 
-        Task<AddMovieToCinemaViewModel?> GetAddMovieToCinemaViewModelByIdAsync(Guid id);
+        Task<AddMovieToCinemaViewModel?> GetAddMovieToCinemaViewModelByIdAsync(Guid movieGuid);
 
-        Task<bool> AddMovieToCinemasAsync(Guid movieId, AddMovieToCinemaViewModel model);
+        Task<bool> AddMovieToCinemasAsync(Guid movieGuid, AddMovieToCinemaViewModel model);
     }
 }

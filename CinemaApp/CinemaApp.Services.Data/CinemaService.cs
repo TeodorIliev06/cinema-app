@@ -32,13 +32,13 @@
             await cinemaRepository.AddAsync(cinema);
         }
 
-        public async Task<CinemaDetailsViewModel?> GetCinemaDetailsByIdAsync(Guid id)
+        public async Task<CinemaDetailsViewModel?> GetCinemaDetailsByIdAsync(Guid cinemaGuid)
         {
             var cinema = await cinemaRepository
                 .GetAllAttached()
                 .Include(c => c.CinemaMovies)
                 .ThenInclude(cm => cm.Movie)
-                .FirstOrDefaultAsync(c => c.Id == id);
+                .FirstOrDefaultAsync(c => c.Id == cinemaGuid);
 
             CinemaDetailsViewModel? viewModel = null;
             if (cinema != null)

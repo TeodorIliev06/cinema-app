@@ -45,9 +45,9 @@
             return true;
         }
 
-        public async Task<MovieDetailsViewModel?> GetMovieDetailsByIdAsync(Guid id)
+        public async Task<MovieDetailsViewModel?> GetMovieDetailsByIdAsync(Guid movieGuid)
         {
-            var movie = await movieRepository.GetByIdAsync(id);
+            var movie = await movieRepository.GetByIdAsync(movieGuid);
 
             var viewModel = new MovieDetailsViewModel();
             if (movie != null)
@@ -58,17 +58,17 @@
             return viewModel;
         }
 
-        public async Task<AddMovieToCinemaViewModel?> GetAddMovieToCinemaViewModelByIdAsync(Guid id)
+        public async Task<AddMovieToCinemaViewModel?> GetAddMovieToCinemaViewModelByIdAsync(Guid movieGuid)
         {
             var movie = await movieRepository
-                .GetByIdAsync(id);
+                .GetByIdAsync(movieGuid);
 
             AddMovieToCinemaViewModel? viewModel = null;
             if (movie != null)
             {
                 viewModel = new AddMovieToCinemaViewModel()
                 {
-                    Id = id.ToString(),
+                    Id = movieGuid.ToString(),
                     Title = movie.Title,
                     Cinemas = await cinemaRepository
                         .GetAllAttached()
@@ -82,7 +82,7 @@
                             Location = c.Location,
                             IsSelected = c.CinemaMovies
                                 .Any(cm =>
-                                    cm.Movie.Id == id &&
+                                    cm.Movie.Id == movieGuid &&
                                     cm.IsDeleted == false)
                         })
                         .ToArrayAsync()
@@ -92,9 +92,9 @@
             return viewModel;
         }
 
-        public async Task<bool> AddMovieToCinemasAsync(Guid movieId, AddMovieToCinemaViewModel model)
+        public async Task<bool> AddMovieToCinemasAsync(Guid movieGuid, AddMovieToCinemaViewModel model)
         {
-            var movie = await movieRepository.GetByIdAsync(movieId);
+            var movie = await movieRepository.GetByIdAsync(movieGuid);
 
             if (movie == null)
             {
@@ -126,7 +126,7 @@
 
                 var cinemaMovie = await cinemaMovieRepository
                     .FirstOrDefaultAsync(cm =>
-                        cm.MovieId == movieId &&
+                        cm.MovieId == movieGuid &&
                         cm.CinemaId == cinemaGuid);
 
                 if (viewModel.IsSelected)
