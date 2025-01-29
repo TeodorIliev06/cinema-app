@@ -13,5 +13,7 @@ namespace CinemaApp.Services.Data.Contracts
         Task<IEnumerable<CinemaIndexViewModel>> GetAllOrderedByLocationAsync();
         Task AddCinemaAsync(AddCinemaFormModel model);
         Task<CinemaDetailsViewModel?> GetCinemaDetailsByIdAsync(Guid cinemaGuid);
+        Task<EditCinemaFormModel?> GetCinemaForEditByIdAsync(Guid id);
+        Task<bool> EditCinemaAsync(EditCinemaFormModel model);
     }
 }

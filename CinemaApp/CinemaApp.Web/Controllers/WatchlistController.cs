@@ -13,7 +13,8 @@
     [Authorize]
     public class WatchlistController(
         IWatchlistService watchlistService,
-        UserManager<ApplicationUser> userManager) : BaseController
+        UserManager<ApplicationUser> userManager,
+        IManagerService managerService) : BaseController(managerService)
     {
         [HttpGet]
         public async Task<IActionResult> Index()

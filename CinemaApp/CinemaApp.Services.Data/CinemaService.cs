@@ -11,7 +11,8 @@
     using CinemaApp.Services.Data.Contracts;
     using CinemaApp.Data.Repositories.Contracts;
 
-    public class CinemaService(IRepository<Cinema, Guid> cinemaRepository) : ICinemaService
+    public class CinemaService(
+        IRepository<Cinema, Guid> cinemaRepository) : ICinemaService
     {
         public async Task<IEnumerable<CinemaIndexViewModel>> GetAllOrderedByLocationAsync()
         {
@@ -59,6 +60,26 @@
             }
 
             return viewModel;
+        }
+
+        public async Task<EditCinemaFormModel?> GetCinemaForEditByIdAsync(Guid id)
+        {
+            var viewModel = await cinemaRepository
+                .GetAllAttached()
+                .To<EditCinemaFormModel>()
+                .FirstOrDefaultAsync(c => 
+                    c.Id.ToLower() == id.ToString().ToLower());
+
+            return viewModel;
+        }
+
+        public async Task<bool> EditCinemaAsync(EditCinemaFormModel model)
+        {
+            var cinema = AutoMapperConfig.MapperInstance.Map<EditCinemaFormModel, Cinema>(model);
+
+            bool result = await cinemaRepository.UpdateAsync(cinema);
+
+            return result;
         }
     }
 }

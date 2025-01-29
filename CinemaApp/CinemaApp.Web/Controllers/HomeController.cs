@@ -11,8 +11,6 @@ namespace CinemaApp.Web.Controllers
 
         public IActionResult Index()
         {
-            ViewData["Title"] = "Home Page";
-            ViewData["Message"] = "Welcome to the Cinema Web App!";
             return View();
         }
     }
