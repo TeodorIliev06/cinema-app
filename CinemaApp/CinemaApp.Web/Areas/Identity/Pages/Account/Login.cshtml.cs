@@ -15,6 +15,7 @@ namespace CinemaApp.Web.Areas.Identity.Pages.Account
 
     public class LoginModel(
         SignInManager<ApplicationUser> signInManager,
+        UserManager<ApplicationUser> userManager,
         ILogger<LoginModel> logger) : PageModel
     {
 
@@ -91,7 +92,14 @@ namespace CinemaApp.Web.Areas.Identity.Pages.Account
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await signInManager.PasswordSignInAsync(Input.Email, Input.Password, Input.RememberMe, lockoutOnFailure: false);
+                var user = await userManager.FindByEmailAsync(Input.Email);
+                if (user == null)
+                {
+                    ModelState.AddModelError(string.Empty, "Invalid username.");
+                    return Page();
+                }
+
+                var result = await signInManager.PasswordSignInAsync(user.UserName!, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
                     logger.LogInformation("User logged in.");
