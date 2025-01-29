@@ -8,6 +8,6 @@ namespace CinemaApp.Services.Data.Contracts
 {
     public interface IManagerService
     {
-        Task<bool> IsUserManager(string? userId);
+        Task<bool> IsUserManagerAsync(string? userId);
     }
 }

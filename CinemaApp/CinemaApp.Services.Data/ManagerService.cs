@@ -8,7 +8,7 @@
     public class ManagerService(
         IRepository<Manager, Guid> managerRepository) : IManagerService
     {
-        public async Task<bool> IsUserManager(string? userId)
+        public async Task<bool> IsUserManagerAsync(string? userId)
         {
             if (string.IsNullOrWhiteSpace(userId))
             {

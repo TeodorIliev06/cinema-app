@@ -1,14 +1,18 @@
 ﻿namespace CinemaApp.Web.Controllers
 {
+    using CinemaApp.Web.Infrastructure.Extensions;
     using Microsoft.AspNetCore.Mvc;
 
     using Common;
+    using Microsoft.AspNetCore.Authorization;
     using ViewModels.Movie;
     using Services.Data.Contracts;
 
     using static Common.EntityValidationConstants.Movie;
 
-    public class MovieController(IMovieService movieService) : BaseController
+    public class MovieController(
+        IMovieService movieService,
+        IManagerService managerService) : BaseController
     {
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -19,12 +23,14 @@
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Create(AddMovieFormModel model)
         {
             if (!this.ModelState.IsValid)
@@ -63,8 +69,16 @@
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> AddToProgram(string? id)
         {
+            var userId = this.User.GetUserId();
+            var isManager = await managerService.IsUserManagerAsync(userId);
+            if (!isManager)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             var movieGuid = Guid.Empty;
 
             bool isGuidValid = ValidationUtils.IsGuidValid(id, ref movieGuid);
@@ -84,8 +98,16 @@
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> AddToProgram(AddMovieToCinemaViewModel model)
         {
+            var userId = this.User.GetUserId();
+            var isManager = await managerService.IsUserManagerAsync(userId);
+            if (!isManager)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
             if (!this.ModelState.IsValid)
             {
                 return View(model);

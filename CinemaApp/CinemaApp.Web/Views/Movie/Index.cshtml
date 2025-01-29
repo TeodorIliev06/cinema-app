@@ -1,6 +1,9 @@
-﻿@using CinemaApp.Web.ViewModels.Movie;
-@model IEnumerable<AllMoviesViewModel>
+﻿@using CinemaApp.Services.Data.Contracts
+@using CinemaApp.Web.Infrastructure.Extensions
+@using CinemaApp.Web.ViewModels.Movie;
 
+@model IEnumerable<AllMoviesViewModel>
+@inject IManagerService managerService
 @if (TempData["ErrorMessage"] != null)
 {
 	<div class="alert alert-danger" role="alert">
@@ -30,10 +33,15 @@
 			<td>@movie.Duration minutes</td>
 			<td>
 				<a asp-action="Details" asp-route-id="@movie.Id" class="btn btn-info">Details</a>
-				<a asp-action="AddToProgram" asp-route-id="@movie.Id" class="btn btn-info">Add To Program</a>
+				
 
 				@if (User?.Identity?.IsAuthenticated ?? false)
 				{
+					@if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
+					{
+						<a asp-action="AddToProgram" asp-route-id="@movie.Id" class="btn btn-info">Add To Program</a>
+					}
+
 					<form asp-controller="Watchlist" asp-action="AddToWatchlist" method="post" class="d-inline">
 						<input type="hidden" name="movieId" value="@movie.Id" />
 						<button type="submit" class="btn btn-warning">+Watchlist</button>
@@ -45,4 +53,10 @@
 	</tbody>
 </table>
 
-<a asp-action="Create" class="btn btn-primary">Add New Movie</a>
+@if (User?.Identity?.IsAuthenticated ?? false)
+{
+	@if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
+	{
+		<a asp-action="Create" class="btn btn-primary">Add New Movie</a>
+	}
+}
