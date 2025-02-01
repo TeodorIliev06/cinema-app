@@ -18,6 +18,7 @@
         {
             IEnumerable<CinemaIndexViewModel> cinemas = await cinemaRepository
                 .GetAllAttached()
+                .Where(c => c.IsDeleted == false)
                 .OrderBy(c => c.Location)
                 .To<CinemaIndexViewModel>()
                 .ToListAsync();
@@ -37,6 +38,7 @@
         {
             var cinema = await cinemaRepository
                 .GetAllAttached()
+                .Where(c => c.IsDeleted == false)
                 .Include(c => c.CinemaMovies)
                 .ThenInclude(cm => cm.Movie)
                 .FirstOrDefaultAsync(c => c.Id == cinemaGuid);
@@ -66,6 +68,7 @@
         {
             var viewModel = await cinemaRepository
                 .GetAllAttached()
+                .Where(c => c.IsDeleted == false)
                 .To<EditCinemaFormModel>()
                 .FirstOrDefaultAsync(c => 
                     c.Id.ToLower() == id.ToString().ToLower());
@@ -80,6 +83,33 @@
             bool result = await cinemaRepository.UpdateAsync(cinema);
 
             return result;
+        }
+
+        public async Task<DeleteCinemaViewModel?> GetCinemaForDeleteByIdAsync(Guid cinemaGuid)
+        {
+            var cinema = await cinemaRepository
+                .GetAllAttached()
+                .Where(c => c.IsDeleted == false)
+                .To<DeleteCinemaViewModel>()
+                .FirstOrDefaultAsync(c =>
+                    c.Id.ToLower() == cinemaGuid.ToString().ToLower());
+
+            return cinema;
+        }
+
+        public async Task<bool> SoftDeleteCinemaAsync(Guid cinemaGuid)
+        {
+            var cinema = await cinemaRepository
+                .FirstOrDefaultAsync(c =>
+                    c.Id.ToString().ToLower() == cinemaGuid.ToString().ToLower());
+            if (cinema == null)
+            {
+                return false;
+            }
+
+            cinema.IsDeleted = true;
+
+            return await cinemaRepository.UpdateAsync(cinema); ;
         }
     }
 }

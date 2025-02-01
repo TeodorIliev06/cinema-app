@@ -1,11 +1,11 @@
 ﻿namespace CinemaApp.Web.Controllers
 {
+    using Common;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-
-    using Common;
     using Services.Data.Contracts;
     using Web.ViewModels.Cinema;
+    using static Common.ErrorMessages.Cinema;
 
     public class CinemaController(
         ICinemaService cinemaService,
@@ -138,6 +138,59 @@
             }
 
             return RedirectToAction(nameof(Details), "Cinema", new { id = model.Id });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(string? id)
+        {
+            bool isManager = await this.IsUserManagerAsync();
+            if (!isManager)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var cinemaGuid = Guid.Empty;
+            bool isIdValid = ValidationUtils.IsGuidValid(id, ref cinemaGuid);
+
+            if (!isIdValid)
+            {
+                return RedirectToAction(nameof(Manage));
+            }
+
+            var viewModel = await cinemaService.GetCinemaForDeleteByIdAsync(cinemaGuid);
+            if (viewModel == null)
+            {
+                return RedirectToAction(nameof(Manage));
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SoftDeleteConfirmed(DeleteCinemaViewModel model)
+        {
+            bool isManager = await this.IsUserManagerAsync();
+            if (!isManager)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var cinemaGuid = Guid.Empty;
+            bool isIdValid = ValidationUtils.IsGuidValid(model.Id, ref cinemaGuid);
+
+            if (!isIdValid)
+            {
+                return RedirectToAction(nameof(Manage));
+            }
+
+            bool isDeleted = await cinemaService.SoftDeleteCinemaAsync(cinemaGuid);
+            if (!isDeleted)
+            {
+                TempData["ErrorMessage"] = RemoveFromCinemaNotSuccessfulMessage;
+                return RedirectToAction(nameof(Delete), new { id = model.Id });
+            }
+
+            return RedirectToAction(nameof(Manage));
         }
     }
 }

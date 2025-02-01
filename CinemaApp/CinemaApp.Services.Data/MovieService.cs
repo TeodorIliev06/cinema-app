@@ -118,7 +118,7 @@
 
                 var cinema = await cinemaRepository.GetByIdAsync(cinemaGuid);
 
-                if (cinema == null)
+                if (cinema == null || cinema.IsDeleted)
                 {
                     //TODO: Return enum with error messages
                     return false;
