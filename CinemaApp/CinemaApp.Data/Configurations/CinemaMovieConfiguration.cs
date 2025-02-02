@@ -18,6 +18,11 @@
                 .HasDefaultValue(false);
 
             builder
+                .Property(cm => cm.AvailableTickets)
+                .IsRequired()
+                .HasDefaultValue(0);
+
+            builder
                 .HasOne(cm => cm.Movie)
                 .WithMany(m => m.CinemaMovies)
                 .HasForeignKey(cm => cm.MovieId)

@@ -1,4 +1,6 @@
-﻿namespace CinemaApp.Common
+﻿using System.Numerics;
+
+namespace CinemaApp.Common
 {
     public static class ErrorMessages
     {
@@ -14,9 +16,21 @@
             public const string EditCinemaNotSuccessfulMessage = "Unexpected error occured while trying to update the cinema! Please contact an administrator.";
         }
 
+        public static class CinemaMovie
+        {
+            public const string AvailableTicketsRequiredMessage = "Please enter the number of available tickets.";
+            public const string AvailableTicketsRangeMessage = "Available tickets must be a positive number.";
+        }
+
         public static class Movie
         {
             public const string EditMovieNotSuccessfulMessage = "Unexpected error occured while trying to update the movie! Please contact an administrator.";
+        }
+
+        public static class Ticket
+        {
+            public const string InvalidTicketsCount = "Tickets count should be a positive number!";
+            public const string InvalidTicketPrice = "Ticket price should be positive";
         }
     }
 }

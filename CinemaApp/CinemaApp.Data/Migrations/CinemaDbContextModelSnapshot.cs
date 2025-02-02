@@ -105,7 +105,7 @@ namespace CinemaApp.Data.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("UsersMovies", (string)null);
+                    b.ToTable("UsersMovies");
                 });
 
             modelBuilder.Entity("CinemaApp.Data.Models.Cinema", b =>
@@ -129,7 +129,7 @@ namespace CinemaApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cinemas", (string)null);
+                    b.ToTable("Cinemas");
 
                     b.HasData(
                         new
@@ -177,6 +177,11 @@ namespace CinemaApp.Data.Migrations
                     b.Property<Guid>("MovieId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<int>("AvailableTickets")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(0);
+
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -186,37 +191,42 @@ namespace CinemaApp.Data.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("CinemasMovies", (string)null);
+                    b.ToTable("CinemasMovies");
 
                     b.HasData(
                         new
                         {
                             CinemaId = new Guid("ae3b4c7d-3b95-4a84-a6b3-18c8b4d8f45d"),
                             MovieId = new Guid("6b12f8a7-d4c8-41b9-8f3d-9c6e7d8f45c2"),
+                            AvailableTickets = 0,
                             IsDeleted = false
                         },
                         new
                         {
                             CinemaId = new Guid("9a67f8cb-8b3c-4f53-9429-d7b4c912f3b1"),
                             MovieId = new Guid("8c9e3d67-4a53-4b95-b8f3-6c7d8f4a9c5e"),
+                            AvailableTickets = 0,
                             IsDeleted = false
                         },
                         new
                         {
                             CinemaId = new Guid("d8346e8e-392c-4872-9c9e-d3c6e8e5b784"),
                             MovieId = new Guid("f8b4c67d-d912-4e5c-8b3c-6e7d45c3b9f4"),
+                            AvailableTickets = 0,
                             IsDeleted = false
                         },
                         new
                         {
                             CinemaId = new Guid("c4e8c967-b54f-4c53-96b8-f8bcd6e9c4c5"),
                             MovieId = new Guid("9c8b7e45-df8c-412c-9b3e-7d8f4b6c9f3d"),
+                            AvailableTickets = 0,
                             IsDeleted = false
                         },
                         new
                         {
                             CinemaId = new Guid("fb4c8e3d-4a53-4c67-95b9-e3d4c912f8a7"),
                             MovieId = new Guid("4a8c9b3e-7f8c-45c6-8d9b-c3e7f9b4a6d8"),
+                            AvailableTickets = 0,
                             IsDeleted = false
                         });
                 });
@@ -243,7 +253,7 @@ namespace CinemaApp.Data.Migrations
                     b.HasIndex("UserId")
                         .IsUnique();
 
-                    b.ToTable("Managers", (string)null);
+                    b.ToTable("Managers");
                 });
 
             modelBuilder.Entity("CinemaApp.Data.Models.Movie", b =>
@@ -289,7 +299,7 @@ namespace CinemaApp.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Movies", (string)null);
+                    b.ToTable("Movies");
 
                     b.HasData(
                         new
@@ -383,7 +393,7 @@ namespace CinemaApp.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tickets", (string)null);
+                    b.ToTable("Tickets");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<System.Guid>", b =>
