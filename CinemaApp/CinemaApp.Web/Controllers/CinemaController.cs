@@ -106,11 +106,15 @@
 
             if (!isIdValid)
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Manage));
             }
 
             var viewModel = await cinemaService
                 .GetCinemaForEditByIdAsync(cinemaGuid);
+            if (viewModel == null)
+            {
+                return RedirectToAction(nameof(Manage));
+            }
 
             return View(viewModel);
         }
@@ -133,7 +137,7 @@
             bool isUpdated = await cinemaService.EditCinemaAsync(model);
             if (!isUpdated)
             {
-                ModelState.AddModelError(string.Empty, "Unexpected error occured while trying to update the cinema! Please contact an administrator.");
+                ModelState.AddModelError(string.Empty, EditCinemaNotSuccessfulMessage);
                 return View(model);
             }
 
@@ -141,6 +145,7 @@
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Delete(string? id)
         {
             bool isManager = await this.IsUserManagerAsync();
@@ -167,6 +172,7 @@
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> SoftDeleteConfirmed(DeleteCinemaViewModel model)
         {
             bool isManager = await this.IsUserManagerAsync();

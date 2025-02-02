@@ -11,6 +11,12 @@
         public static class Cinema
         {
             public const string RemoveFromCinemaNotSuccessfulMessage = "An unexpected error occurred while deleting the cinema. Please try again later!";
+            public const string EditCinemaNotSuccessfulMessage = "Unexpected error occured while trying to update the cinema! Please contact an administrator.";
+        }
+
+        public static class Movie
+        {
+            public const string EditMovieNotSuccessfulMessage = "Unexpected error occured while trying to update the movie! Please contact an administrator.";
         }
     }
 }

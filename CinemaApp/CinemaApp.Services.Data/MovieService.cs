@@ -12,6 +12,7 @@
     using CinemaApp.Data.Repositories.Contracts;
 
     using static Common.EntityValidationConstants.Movie;
+    using static Common.ApplicationConstants;
 
     public class MovieService(
         IRepository<Movie, Guid> movieRepository,
@@ -30,7 +31,6 @@
         {
             bool isReleaseDateValid = DateTime
                 .TryParseExact(model.ReleaseDate, ReleaseDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime releaseDate);
-
             if (!isReleaseDateValid)
             {
                 return false;
@@ -156,6 +156,54 @@
             await cinemaMovieRepository.AddRangeAsync(entitiesToAdd.ToArray());
 
             return true;
+        }
+
+        public async Task<EditMovieFormModel?> GetEditMovieFormModelByIdAsync(Guid movieGuid)
+        {
+            var viewModel = await movieRepository
+                .GetAllAttached()
+                .Where(m => m.IsDeleted == false)
+                .To<EditMovieFormModel>()
+                .FirstOrDefaultAsync(m =>
+                    m.Id.ToLower() == movieGuid.ToString().ToLower());
+
+            if (viewModel != null &&
+                viewModel.ImageUrl.Equals(ApplicationConstants.NoImageUrl))
+            {
+                viewModel.ImageUrl = "No image";
+            }
+
+            return viewModel;
+        }
+
+        public async Task<bool> EditMovieAsync(EditMovieFormModel model)
+        {
+            var movieGuid = Guid.Empty;
+            bool isMovieGuidValid = ValidationUtils.IsGuidValid(model.Id, ref movieGuid);
+
+            if (!isMovieGuidValid)
+            {
+                return false;
+            }
+
+            var editedMovie = AutoMapperConfig.MapperInstance.Map<Movie>(model);
+            editedMovie.Id = movieGuid;
+
+            bool isReleaseDateValid = DateTime
+                .TryParseExact(model.ReleaseDate, ReleaseDateFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime releaseDate);
+            if (!isReleaseDateValid)
+            {
+                return false;
+            }
+
+            editedMovie.ReleaseDate = releaseDate;
+            if (model.ImageUrl == null ||
+                model.ImageUrl.Equals("No image"))
+            {
+                editedMovie.ImageUrl = NoImageUrl;
+            }
+
+            return await movieRepository.UpdateAsync(editedMovie);
         }
     }
 }

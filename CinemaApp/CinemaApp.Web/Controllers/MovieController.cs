@@ -8,6 +8,7 @@
     using Services.Data.Contracts;
 
     using static Common.EntityValidationConstants.Movie;
+    using static Common.ErrorMessages.Movie;
 
     public class MovieController(
         IMovieService movieService,
@@ -137,6 +138,60 @@
             }
 
             return RedirectToAction(nameof(Index), "Cinema");
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Edit(string? id)
+        {
+            bool isManager = await this.IsUserManagerAsync();
+            if (!isManager)
+            {
+                //TODO: Implement notifications and warnings for error messages
+                return RedirectToAction(nameof(Index));
+            }
+
+            var movieGuid = Guid.Empty;
+            bool isIdValid = ValidationUtils.IsGuidValid(id, ref movieGuid);
+
+            if (!isIdValid)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var viewModel = await movieService
+                .GetEditMovieFormModelByIdAsync(movieGuid);
+            if (viewModel == null)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Edit(EditMovieFormModel model)
+        {
+            bool isManager = await this.IsUserManagerAsync();
+            if (!isManager)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            bool isUpdated = await movieService.EditMovieAsync(model);
+            if (!isUpdated)
+            {
+                ModelState.AddModelError(string.Empty, EditMovieNotSuccessfulMessage);
+                return View(model);
+            }
+
+            return RedirectToAction(nameof(Details), "Movie", new { id = model.Id });
         }
     }
 }
