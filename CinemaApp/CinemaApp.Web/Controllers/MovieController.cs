@@ -9,6 +9,7 @@
 
     using static Common.EntityValidationConstants.Movie;
     using static Common.ErrorMessages.Movie;
+    using CinemaApp.Services.Data;
 
     public class MovieController(
         IMovieService movieService,
@@ -192,6 +193,21 @@
             }
 
             return RedirectToAction(nameof(Details), "Movie", new { id = model.Id });
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Manage()
+        {
+            bool isManager = await this.IsUserManagerAsync();
+            if (!isManager)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var movies = await movieService.GetAllMoviesAsync();
+
+            return View(movies);
         }
     }
 }

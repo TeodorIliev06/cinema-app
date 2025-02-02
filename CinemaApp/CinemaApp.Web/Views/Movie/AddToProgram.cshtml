@@ -1,5 +1,10 @@
-﻿@using CinemaApp.Web.ViewModels.Movie;
+﻿@using CinemaApp.Services.Data.Contracts
+@using CinemaApp.Web.Infrastructure.Extensions
+@using CinemaApp.Web.ViewModels.Movie;
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 @model AddMovieToCinemaViewModel;
+
+@inject IManagerService managerService
 
 @{
 	ViewData["Title"] = "Add Movie To Cinema";
@@ -30,4 +35,11 @@
 	<button type="submit" class="btn btn-primary">Confirm</button>
 </form>
 
-<a asp-action="Index" class="btn btn-secondary mt-3">Back to Movies</a>
+@if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
+{
+	<a asp-action="Manage" class="btn btn-secondary mt-3">Back to Movies</a>
+}
+else
+{
+	<a asp-action="Index" class="btn btn-secondary mt-3">Back to Movies</a>
+}
