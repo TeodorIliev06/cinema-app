@@ -1,18 +1,19 @@
-﻿namespace CinemaApp.Web.Controllers
+﻿namespace CinemaApp.WebApi.Controllers
 {
     using CinemaApp.Services.Data.Contracts;
     using CinemaApp.Web.Infrastructure.Extensions;
+
     using Microsoft.AspNetCore.Mvc;
 
-    public class BaseController(
-        IManagerService managerService) : Controller
+    [ApiController]
+    [Route("[controller]/")]
+    public abstract class BaseApiController(
+        IManagerService managerService) : ControllerBase
     {
-        protected readonly IManagerService managerService = managerService;
-
         protected async Task<bool> IsUserManagerAsync()
         {
             string? userId = this.User.GetUserId();
-            bool isManager = await this.managerService
+            bool isManager = await managerService
                 .IsUserManagerAsync(userId);
 
             return isManager;

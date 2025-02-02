@@ -48,6 +48,7 @@
             {
                 viewModel = new CinemaDetailsViewModel()
                 {
+                    Id = cinema.Id.ToString(),
                     Name = cinema.Name,
                     Location = cinema.Location,
                     Movies = cinema.CinemaMovies
@@ -55,7 +56,9 @@
                         .Select(cm => new CinemaMovieViewModel()
                         {
                             Title = cm.Movie.Title,
+                            Genre = cm.Movie.Genre,
                             Duration = cm.Movie.Duration,
+                            Description = cm.Movie.Description
                         })
                         .ToList()
                 };
