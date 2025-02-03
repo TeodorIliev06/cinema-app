@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Ticket\" />
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 

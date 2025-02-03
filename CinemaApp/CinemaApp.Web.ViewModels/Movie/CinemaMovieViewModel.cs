@@ -14,5 +14,7 @@
         public int Duration { get; set; }
 
         public string Description { get; set; } = null!;
+
+        public int AvailableTickets { get; set; }
     }
 }

@@ -3,7 +3,9 @@ namespace CinemaApp.WebApi
     using CinemaApp.Data;
     using CinemaApp.Data.Models;
     using CinemaApp.Services.Data.Contracts;
+    using CinemaApp.Services.Mapping;
     using CinemaApp.Web.Infrastructure.Extensions;
+    using CinemaApp.Web.ViewModels;
     using Microsoft.EntityFrameworkCore;
 
     public class Program
@@ -30,7 +32,20 @@ namespace CinemaApp.WebApi
             builder.Services.RegisterRepositories(typeof(ApplicationUser).Assembly);
             builder.Services.RegisterUserDefinedServices(typeof(IMovieService).Assembly);
 
+            builder.Services.AddCors(cfg =>
+            {
+                cfg.AddPolicy("AllowAll", policyBld =>
+                {
+                    policyBld
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowAnyOrigin();
+                });
+            });
+
             var app = builder.Build();
+
+            AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).Assembly);
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -43,6 +58,7 @@ namespace CinemaApp.WebApi
 
             app.UseAuthorization();
 
+            app.UseCors("AllowAll");
 
             app.MapControllers();
 

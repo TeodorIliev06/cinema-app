@@ -20,11 +20,11 @@
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetMoviesByCinema(string? id)
         {
-            var isManager = await this.IsUserManagerAsync();
-            if (!isManager)
-            {
-                return Unauthorized();
-            }
+            //var isManager = await this.IsUserManagerAsync();
+            //if (!isManager)
+            //{
+            //    return Unauthorized();
+            //}
 
             var cinemaGuid = Guid.Empty;
             var isIdValid = ValidationUtils.IsGuidValid(id, ref cinemaGuid);
