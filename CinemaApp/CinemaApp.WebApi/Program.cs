@@ -41,6 +41,15 @@ namespace CinemaApp.WebApi
                         .AllowAnyMethod()
                         .AllowAnyOrigin();
                 });
+
+                cfg.AddPolicy("AllowMyServer", policyBld =>
+                {
+                    policyBld
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials()
+                        .WithOrigins("https://localhost:7040");
+                });
             });
 
             var app = builder.Build();
@@ -58,7 +67,7 @@ namespace CinemaApp.WebApi
 
             app.UseAuthorization();
 
-            app.UseCors("AllowAll");
+            app.UseCors("AllowMyServer");
 
             app.MapControllers();
 

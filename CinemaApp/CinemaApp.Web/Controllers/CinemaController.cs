@@ -72,6 +72,8 @@
                 return RedirectToAction(nameof(Index));
             }
 
+            await this.AppendUserCookieAsync();
+
             return View(viewModel);
         }
 

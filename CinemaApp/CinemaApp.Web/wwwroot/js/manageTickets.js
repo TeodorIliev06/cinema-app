@@ -1,5 +1,9 @@
 ﻿function openManageTicketsModal(cinemaId) {
-    fetch(`https://localhost:7042/TicketApi/GetMoviesByCinema/${cinemaId}`)
+    fetch(`https://localhost:7042/TicketApi/GetMoviesByCinema/${cinemaId}`,
+        {
+            method: 'GET',
+            credentials: 'include'
+        })
         .then(response => response.json())
         .then(movies => {
             renderMoviesInModal(movies);
