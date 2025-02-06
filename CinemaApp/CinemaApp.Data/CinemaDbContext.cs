@@ -7,7 +7,7 @@
 
     using Models;
 
-    public class CinemaDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>
+    public class CinemaDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
         public CinemaDbContext()
         {

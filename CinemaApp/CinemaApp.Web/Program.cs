@@ -22,12 +22,12 @@ namespace CinemaApp.Web
             builder.Services.AddDbContext<CinemaDbContext>(cfg =>
                 cfg.UseSqlServer(connectionString));
 
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole<Guid>>(cfg =>
+            builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(cfg =>
                 {
                     IdentityOptionsConfigurator.Configure(builder, cfg);
                 })
                 .AddEntityFrameworkStores<CinemaDbContext>()
-                .AddRoles<IdentityRole<Guid>>()
+                .AddRoles<ApplicationRole>()
                 .AddSignInManager<SignInManager<ApplicationUser>>()
                 .AddUserManager<UserManager<ApplicationUser>>();
             //.AddUserStore<ApplicationUser>();
