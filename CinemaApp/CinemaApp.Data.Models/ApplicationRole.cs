@@ -5,10 +5,14 @@
 
     public class ApplicationRole : IdentityRole<Guid>, ISoftDeletable
     {
-        public ApplicationRole() 
-            : base()
+        public ApplicationRole()
         {
 
+        }
+
+        public ApplicationRole(string roleName) : this()
+        {
+            this.Name = roleName;
         }
 
         public bool IsDeleted { get; set; }

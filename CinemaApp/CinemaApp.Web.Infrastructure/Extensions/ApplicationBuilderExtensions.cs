@@ -19,5 +19,18 @@
 
             return app;
         }
+
+        public static async Task<IApplicationBuilder> SeedAdminAsync(
+            this IApplicationBuilder app,
+            string adminEmail,
+            string adminUsername,
+            string adminPassword)
+        {
+            using var scope = app.ApplicationServices.CreateScope();
+            var serviceProvider = scope.ServiceProvider;
+            await serviceProvider.SeedAdminAsync(adminEmail, adminUsername, adminPassword);
+
+            return app;
+        }
     }
 }
