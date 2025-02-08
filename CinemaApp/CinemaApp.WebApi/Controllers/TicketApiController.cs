@@ -11,7 +11,8 @@
     public class TicketApiController(
         IManagerService managerService,
         ICinemaService cinemaService,
-        ITicketService ticketService) : BaseApiController(managerService)
+        ITicketService ticketService,
+        IMovieService movieService) : BaseApiController(managerService)
     {
         [HttpGet("[action]/{id?}")]
         [ManagerOnly]
@@ -37,6 +38,36 @@
             }
 
             return Ok(viewModel);
+        }
+
+        [HttpPost("[action]")]
+        [ProducesResponseType(typeof(AvailableTicketsViewModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetAvailableTickets([FromBody] GetAvailableTicketsFormModel model)
+        {
+            var cinemaGuid = Guid.Empty;
+            var isCinemaIdValid = ValidationUtils.IsGuidValid(model.CinemaId, ref cinemaGuid);
+            if (!isCinemaIdValid)
+            {
+                return BadRequest();
+            }
+
+            var movieGuid = Guid.Empty;
+            var isMovieGuidValid = ValidationUtils.IsGuidValid(model.MovieId, ref movieGuid);
+            if (!isMovieGuidValid)
+            {
+                return BadRequest();
+            }
+
+            var availableTicketsViewModel = await movieService
+                .GetAvailableTicketsByIdAsync(cinemaGuid, movieGuid);
+            if (availableTicketsViewModel == null)
+            {
+                return BadRequest();
+            }
+
+            return Ok(availableTicketsViewModel);
         }
 
         [HttpPost("[action]")]

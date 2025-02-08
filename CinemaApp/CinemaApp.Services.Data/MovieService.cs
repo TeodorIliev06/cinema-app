@@ -10,7 +10,7 @@
     using CinemaApp.Web.ViewModels.Cinema;
     using CinemaApp.Services.Data.Contracts;
     using CinemaApp.Data.Repositories.Contracts;
-
+    using CinemaApp.Web.ViewModels.CinemaMovie;
     using static Common.EntityValidationConstants.Movie;
     using static Common.ApplicationConstants;
 
@@ -204,6 +204,28 @@
             }
 
             return await movieRepository.UpdateAsync(editedMovie);
+        }
+
+        public async Task<AvailableTicketsViewModel?> GetAvailableTicketsByIdAsync(Guid cinemaGuid, Guid movieGuid)
+        {
+            var cinemaMovie = await cinemaMovieRepository
+                .FirstOrDefaultAsync(cm =>
+                    cm.MovieId == movieGuid &&
+                    cm.CinemaId == cinemaGuid);
+
+            AvailableTicketsViewModel viewModel = null;
+            if (cinemaMovie != null)
+            {
+                viewModel = new AvailableTicketsViewModel()
+                {
+                    CinemaId = cinemaGuid.ToString(),
+                    MovieId = movieGuid.ToString(),
+                    AvailableTickets = cinemaMovie.AvailableTickets,
+                    Quantity = 0
+                };
+            }
+
+            return viewModel;
         }
     }
 }

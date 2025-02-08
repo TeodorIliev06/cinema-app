@@ -48,8 +48,8 @@ namespace CinemaApp.Common
         {
             public const int CountMinValue = 1;
             public const int CountMaxValue = int.MaxValue;
-            public const string PriceMinValue = "0.01m";
-            public const string PriceMaxValue = "79228162514264337593543950335m";
+            public const string PriceMinValue = "0.01";
+            public const string PriceMaxValue = "79228162514264337593543950335";
         }
     }
 }

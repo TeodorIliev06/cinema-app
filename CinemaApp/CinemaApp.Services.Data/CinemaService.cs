@@ -114,7 +114,7 @@
 
             cinema.IsDeleted = true;
 
-            return await cinemaRepository.UpdateAsync(cinema); ;
+            return await cinemaRepository.UpdateAsync(cinema);
         }
     }
 }
