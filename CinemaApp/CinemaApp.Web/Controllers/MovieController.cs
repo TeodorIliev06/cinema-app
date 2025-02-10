@@ -209,5 +209,60 @@
 
             return View(movies);
         }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Delete(string? id)
+        {
+            bool isManager = await this.IsUserManagerAsync();
+            if (!isManager)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var movieGuid = Guid.Empty;
+            bool isIdValid = ValidationUtils.IsGuidValid(id, ref movieGuid);
+
+            if (!isIdValid)
+            {
+                return RedirectToAction(nameof(Manage));
+            }
+
+            var viewModel = await movieService.GetMovieForDeleteByIdAsync(movieGuid);
+            if (viewModel == null)
+            {
+                return RedirectToAction(nameof(Manage));
+            }
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> SoftDeleteConfirmed(DeleteMovieViewModel model)
+        {
+            bool isManager = await this.IsUserManagerAsync();
+            if (!isManager)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            var movieGuid = Guid.Empty;
+            bool isIdValid = ValidationUtils.IsGuidValid(model.Id, ref movieGuid);
+
+            if (!isIdValid)
+            {
+                return RedirectToAction(nameof(Manage));
+            }
+
+            bool isDeleted = await movieService.SoftDeleteMovieAsync(movieGuid);
+            if (!isDeleted)
+            {
+                TempData["ErrorMessage"] = RemoveFromMovieNotSuccessfulMessage;
+                return RedirectToAction(nameof(Delete), new { id = model.Id });
+            }
+
+            return RedirectToAction(nameof(Manage));
+        }
     }
 }

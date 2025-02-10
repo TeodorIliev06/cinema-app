@@ -20,5 +20,9 @@
         Task<bool> EditMovieAsync(EditMovieFormModel model);
 
         Task<AvailableTicketsViewModel?> GetAvailableTicketsByIdAsync(Guid cinemaGuid, Guid movieGuid);
+
+        Task<DeleteMovieViewModel?> GetMovieForDeleteByIdAsync(Guid movieGuid);
+
+        Task<bool> SoftDeleteMovieAsync(Guid movieGuid);
     }
 }

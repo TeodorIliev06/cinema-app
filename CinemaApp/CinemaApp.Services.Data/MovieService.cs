@@ -23,6 +23,7 @@
         {
             return await movieRepository
                 .GetAllAttached()
+                .Where(c => c.IsDeleted == false)
                 .To<AllMoviesViewModel>()
                 .ToArrayAsync();
         }
@@ -226,6 +227,33 @@
             }
 
             return viewModel;
+        }
+
+        public async Task<DeleteMovieViewModel?> GetMovieForDeleteByIdAsync(Guid movieGuid)
+        {
+            var cinema = await movieRepository
+                .GetAllAttached()
+                .Where(m => m.IsDeleted == false)
+                .To<DeleteMovieViewModel>()
+                .FirstOrDefaultAsync(c =>
+                    c.Id.ToLower() == movieGuid.ToString().ToLower());
+
+            return cinema;
+        }
+
+        public async Task<bool> SoftDeleteMovieAsync(Guid movieGuid)
+        {
+            var movie = await movieRepository
+                .FirstOrDefaultAsync(c =>
+                    c.Id.ToString().ToLower() == movieGuid.ToString().ToLower());
+            if (movie == null)
+            {
+                return false;
+            }
+
+            movie.IsDeleted = true;
+
+            return await movieRepository.UpdateAsync(movie);
         }
     }
 }

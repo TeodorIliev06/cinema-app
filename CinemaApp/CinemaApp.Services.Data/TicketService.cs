@@ -43,7 +43,7 @@
                 ticketsToBuy.Add(new Ticket
                 {
                     Id = Guid.NewGuid(),
-                    Price = (decimal)random.Next(5, 20),
+                    Price = random.Next(5, 20),
                     CinemaId = cinemaGuid,
                     MovieId = movieGuid,
                     UserId = Guid.Parse(userId),

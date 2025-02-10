@@ -24,6 +24,7 @@ namespace CinemaApp.Common
 
         public static class Movie
         {
+            public const string RemoveFromMovieNotSuccessfulMessage = "An unexpected error occurred while deleting the movie. Please try again later!";
             public const string EditMovieNotSuccessfulMessage = "Unexpected error occured while trying to update the movie! Please contact an administrator.";
         }
 
