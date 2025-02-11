@@ -16,11 +16,15 @@
         IManagerService managerService) : BaseController(managerService)
     {
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(AllMoviesSearchFilterViewModel formModel)
         {
-            var movies = await movieService.GetAllMoviesAsync();
+            var movies = await movieService.GetAllMoviesAsync(formModel);
 
-            return View(movies);
+            var viewModel = new AllMoviesSearchFilterViewModel();
+            viewModel.Movies = movies;
+            viewModel.AllGenres = await movieService.GetAllGenresAsync();
+
+            return View(viewModel);
         }
 
         [HttpGet]
@@ -205,7 +209,8 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            var movies = await movieService.GetAllMoviesAsync();
+            var movies = await movieService
+                .GetAllMoviesAsync(new AllMoviesSearchFilterViewModel());
 
             return View(movies);
         }

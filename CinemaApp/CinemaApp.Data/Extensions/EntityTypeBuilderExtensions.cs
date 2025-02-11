@@ -17,6 +17,8 @@
             {
                 builder.HasData(entities);
             }
+
+            //TODO: Refacture seeding with validation and DTOs
         }
     }
 }

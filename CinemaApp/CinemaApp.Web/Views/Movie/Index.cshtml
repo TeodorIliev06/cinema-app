@@ -1,57 +1,104 @@
 ﻿@using CinemaApp.Services.Data.Contracts
 @using CinemaApp.Web.Infrastructure.Extensions
 @using CinemaApp.Web.ViewModels.Movie;
+@using static CinemaApp.Common.ErrorMessages.Watchlist
 
-@model IEnumerable<AllMoviesViewModel>
+@model AllMoviesSearchFilterViewModel
 @inject IManagerService managerService
-@if (TempData["ErrorMessage"] != null)
+@if (TempData[nameof(AddToWatchlistNotSuccessfulMessage)] != null)
 {
-	<div class="alert alert-danger" role="alert">
-		@TempData["ErrorMessage"]
-	</div>
+    <div class="alert alert-danger" role="alert">
+        @TempData[nameof(AddToWatchlistNotSuccessfulMessage)]
+    </div>
 }
 
 <h2>All Movies</h2>
 
-<table class="table table-striped">
-	<thead>
-	<tr>
-		<th>Title</th>
-		<th>Genre</th>
-		<th>Release Date</th>
-		<th>Duration</th>
-		<th>Actions</th>
-	</tr>
-	</thead>
-	<tbody>
-	@foreach (var movie in Model)
-	{
-		<tr>
-			<td>@movie.Title</td>
-			<td>@movie.Genre</td>
-			<td>@movie.ReleaseDate</td>
-			<td>@movie.Duration minutes</td>
-			<td>
-				<a asp-action="Details" asp-route-id="@movie.Id" class="btn btn-info">Details</a>
-				
-
-				@if (User?.Identity?.IsAuthenticated ?? false)
+<form method="get" asp-action="Index" class="mb-4">
+	<div class="row">
+		<div class="col">
+			<input asp-for="SearchQuery" class="form-control" placeholder="Search by title..." />
+		</div>
+		<div class="col">
+			<select asp-for="GenreFilter" class="form-control">
+				@if (Model.AllGenres != null)
 				{
-					<form asp-controller="Watchlist" asp-action="AddToWatchlist" method="post" class="d-inline">
-						<input type="hidden" name="movieId" value="@movie.Id" />
-						<button type="submit" class="btn btn-warning">+Watchlist</button>
-					</form>
+					<option value="">Filter by genre...</option>
+					foreach (string genre in Model.AllGenres)
+					{
+						<option value="@genre">@genre</option>
+					}
 				}
-			</td>
-		</tr>
-	}
-	</tbody>
+			</select>
+		</div>
+		<div class="col">
+			<input asp-for="YearFilter" class="form-control"placeholder="Filter by year..." />
+		</div>
+		<div class="col">
+			<button type="submit" class="btn btn-primary">Filter</button>
+		</div>
+	</div>
+</form>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Title</th>
+            <th>Genre</th>
+            <th>Release Date</th>
+            <th>Duration</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+		@if (Model.Movies != null)
+		{
+			@foreach (AllMoviesViewModel movie in Model.Movies)
+			{
+				<tr>
+					<td>
+						@if (!string.IsNullOrEmpty(movie.ImageUrl))
+						{
+							<img src="@movie.ImageUrl" alt="@movie.Title" style="width: 100px; height: auto;"/>
+						}
+						else
+						{
+							<span>No Image Available</span>
+						}
+					</td>
+					<td>@movie.Title</td>
+					<td>@movie.Genre</td>
+					<td>@movie.ReleaseDate</td>
+					<td>@movie.Duration minutes</td>
+					<td>
+						<a asp-action="Details" asp-route-id="@movie.Id" class="btn btn-info">Details</a>
+
+						@if (User?.Identity?.IsAuthenticated ?? false)
+						{
+							<form asp-controller="Watchlist" asp-action="AddToWatchlist" method="post" class="d-inline">
+								<input type="hidden" name="movieId" value="@movie.Id"/>
+								<button type="submit" class="btn btn-warning">+Watchlist</button>
+							</form>
+
+							@if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
+							{
+								<a asp-action="AddToProgram" asp-route-id="@movie.Id" class="btn btn-info">Add to Program</a>
+								<a asp-action="Edit" asp-route-id="@movie.Id" class="btn btn-primary">Edit</a>
+								<a asp-action="Delete" asp-route-id="@movie.Id" class="btn btn-danger">Delete</a>
+							}
+						}
+					</td>
+				</tr>
+			}
+		}
+    </tbody>
 </table>
 
 @if (User?.Identity?.IsAuthenticated ?? false)
 {
-	@if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
-	{
-		<a asp-action="Create" class="btn btn-primary">Add New Movie</a>
-	}
+    @if (await this.managerService.IsUserManagerAsync(this.User.GetUserId()))
+    {
+        <a asp-action="Create" class="btn btn-primary">Add New Movie</a>
+    }
 }

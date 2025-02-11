@@ -5,7 +5,7 @@
 
     public interface IMovieService
     {
-        Task<IEnumerable<AllMoviesViewModel>> GetAllMoviesAsync();
+        Task<IEnumerable<AllMoviesViewModel>> GetAllMoviesAsync(AllMoviesSearchFilterViewModel formModel);
 
         Task<bool> AddMovieAsync(AddMovieFormModel model);
 
@@ -24,5 +24,7 @@
         Task<DeleteMovieViewModel?> GetMovieForDeleteByIdAsync(Guid movieGuid);
 
         Task<bool> SoftDeleteMovieAsync(Guid movieGuid);
+
+        Task<IEnumerable<string>> GetAllGenresAsync();
     }
 }

@@ -13,17 +13,51 @@
     using CinemaApp.Web.ViewModels.CinemaMovie;
     using static Common.EntityValidationConstants.Movie;
     using static Common.ApplicationConstants;
+    using System.Text.RegularExpressions;
 
     public class MovieService(
         IRepository<Movie, Guid> movieRepository,
         IRepository<Cinema, Guid> cinemaRepository,
         IRepository<CinemaMovie, object> cinemaMovieRepository) : IMovieService
     {
-        public async Task<IEnumerable<AllMoviesViewModel>> GetAllMoviesAsync()
+        public async Task<IEnumerable<AllMoviesViewModel>> GetAllMoviesAsync(AllMoviesSearchFilterViewModel inputModel)
         {
-            return await movieRepository
-                .GetAllAttached()
-                .Where(c => c.IsDeleted == false)
+            IQueryable<Movie> allMoviesQuery = movieRepository
+                .GetAllAttached();
+            if (!String.IsNullOrWhiteSpace(inputModel.SearchQuery))
+            {
+                allMoviesQuery = allMoviesQuery
+                    .Where(m => m.Title.ToLower().Contains(inputModel.SearchQuery.ToLower()));
+            }
+            if (!String.IsNullOrWhiteSpace(inputModel.GenreFilter))
+            {
+                allMoviesQuery = allMoviesQuery
+                    .Where(m => m.Genre.ToLower() == inputModel.GenreFilter.ToLower());
+            }
+            if (!String.IsNullOrWhiteSpace(inputModel.YearFilter))
+            {
+                Match rangeMatch = Regex.Match(inputModel.YearFilter, YearFilterRangeRegex);
+                if (rangeMatch.Success)
+                {
+                    int startYear = int.Parse(rangeMatch.Groups[1].Value);
+                    int endYear = int.Parse(rangeMatch.Groups[2].Value);
+                    allMoviesQuery = allMoviesQuery
+                        .Where(m => 
+                            m.ReleaseDate.Year >= startYear &&
+                            m.ReleaseDate.Year <= endYear);
+                }
+                else
+                {
+                    bool isValidNumber = int.TryParse(inputModel.YearFilter, out int year);
+                    if (isValidNumber)
+                    {
+                        allMoviesQuery = allMoviesQuery
+                            .Where(m => m.ReleaseDate.Year == year);
+                    }
+                }
+            }
+
+            return await allMoviesQuery
                 .To<AllMoviesViewModel>()
                 .ToArrayAsync();
         }
@@ -254,6 +288,17 @@
             movie.IsDeleted = true;
 
             return await movieRepository.UpdateAsync(movie);
+        }
+
+        public async Task<IEnumerable<string>> GetAllGenresAsync()
+        {
+            var allGenres = await movieRepository
+                .GetAllAttached()
+                .Select(m => m.Genre)
+                .Distinct()
+                .ToArrayAsync();
+
+            return allGenres;
         }
     }
 }
