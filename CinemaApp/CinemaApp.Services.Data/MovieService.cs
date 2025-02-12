@@ -14,29 +14,30 @@
     using static Common.EntityValidationConstants.Movie;
     using static Common.ApplicationConstants;
     using System.Text.RegularExpressions;
+    using System.Linq;
 
     public class MovieService(
         IRepository<Movie, Guid> movieRepository,
         IRepository<Cinema, Guid> cinemaRepository,
         IRepository<CinemaMovie, object> cinemaMovieRepository) : IMovieService
     {
-        public async Task<IEnumerable<AllMoviesViewModel>> GetAllMoviesAsync(AllMoviesSearchFilterViewModel inputModel)
+        public async Task<IEnumerable<AllMoviesViewModel>> GetAllMoviesAsync(AllMoviesSearchFilterViewModel formModel)
         {
             IQueryable<Movie> allMoviesQuery = movieRepository
                 .GetAllAttached();
-            if (!String.IsNullOrWhiteSpace(inputModel.SearchQuery))
+            if (!String.IsNullOrWhiteSpace(formModel.SearchQuery))
             {
                 allMoviesQuery = allMoviesQuery
-                    .Where(m => m.Title.ToLower().Contains(inputModel.SearchQuery.ToLower()));
+                    .Where(m => m.Title.ToLower().Contains(formModel.SearchQuery.ToLower()));
             }
-            if (!String.IsNullOrWhiteSpace(inputModel.GenreFilter))
+            if (!String.IsNullOrWhiteSpace(formModel.GenreFilter))
             {
                 allMoviesQuery = allMoviesQuery
-                    .Where(m => m.Genre.ToLower() == inputModel.GenreFilter.ToLower());
+                    .Where(m => m.Genre.ToLower() == formModel.GenreFilter.ToLower());
             }
-            if (!String.IsNullOrWhiteSpace(inputModel.YearFilter))
+            if (!String.IsNullOrWhiteSpace(formModel.YearFilter))
             {
-                Match rangeMatch = Regex.Match(inputModel.YearFilter, YearFilterRangeRegex);
+                Match rangeMatch = Regex.Match(formModel.YearFilter, YearFilterRangeRegex);
                 if (rangeMatch.Success)
                 {
                     int startYear = int.Parse(rangeMatch.Groups[1].Value);
@@ -48,13 +49,21 @@
                 }
                 else
                 {
-                    bool isValidNumber = int.TryParse(inputModel.YearFilter, out int year);
+                    bool isValidNumber = int.TryParse(formModel.YearFilter, out int year);
                     if (isValidNumber)
                     {
                         allMoviesQuery = allMoviesQuery
                             .Where(m => m.ReleaseDate.Year == year);
                     }
                 }
+            }
+
+            if (formModel.CurrentPage.HasValue &&
+                formModel.EntitiesPerPage.HasValue)
+            {
+                allMoviesQuery = allMoviesQuery
+                    .Skip(formModel.EntitiesPerPage.Value * (formModel.CurrentPage.Value - 1))
+                    .Take(formModel.EntitiesPerPage.Value);
             }
 
             return await allMoviesQuery
@@ -299,6 +308,23 @@
                 .ToArrayAsync();
 
             return allGenres;
+        }
+
+        public async Task<int> GetMoviesCountByFilterAsync(AllMoviesSearchFilterViewModel formModel)
+        {
+            var modelCopy = new AllMoviesSearchFilterViewModel()
+            {
+                CurrentPage = null,
+                EntitiesPerPage = null,
+                SearchQuery = formModel.SearchQuery,
+                GenreFilter = formModel.GenreFilter,
+                YearFilter = formModel.YearFilter,
+            };
+
+            int moviesCount = (await this.GetAllMoviesAsync(modelCopy))
+                .Count();
+
+            return moviesCount;
         }
     }
 }

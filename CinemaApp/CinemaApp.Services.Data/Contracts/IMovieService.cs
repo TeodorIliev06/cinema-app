@@ -26,5 +26,7 @@
         Task<bool> SoftDeleteMovieAsync(Guid movieGuid);
 
         Task<IEnumerable<string>> GetAllGenresAsync();
+
+        Task<int> GetMoviesCountByFilterAsync(AllMoviesSearchFilterViewModel formModel);
     }
 }

@@ -9,7 +9,6 @@
 
     using static Common.EntityValidationConstants.Movie;
     using static Common.ErrorMessages.Movie;
-    using CinemaApp.Services.Data;
 
     public class MovieController(
         IMovieService movieService,
@@ -20,9 +19,19 @@
         {
             var movies = await movieService.GetAllMoviesAsync(formModel);
 
-            var viewModel = new AllMoviesSearchFilterViewModel();
-            viewModel.Movies = movies;
-            viewModel.AllGenres = await movieService.GetAllGenresAsync();
+            var allGenres = await movieService.GetAllGenresAsync();
+            var allMoviesCount = await movieService.GetMoviesCountByFilterAsync(formModel);
+            var viewModel = new AllMoviesSearchFilterViewModel
+            {
+                Movies = movies,
+                SearchQuery = formModel.SearchQuery,
+                GenreFilter = formModel.GenreFilter,
+                YearFilter = formModel.YearFilter,
+                AllGenres = allGenres,
+                CurrentPage = formModel.CurrentPage,
+                TotalPages = (int)Math.Ceiling((double)allMoviesCount /
+                                               formModel.EntitiesPerPage!.Value),
+            };
 
             return View(viewModel);
         }

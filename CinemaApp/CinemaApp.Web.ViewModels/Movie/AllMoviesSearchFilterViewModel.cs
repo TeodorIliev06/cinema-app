@@ -17,5 +17,11 @@ namespace CinemaApp.Web.ViewModels.Movie
         public IEnumerable<string>? AllGenres { get; set; }
 
         public string? YearFilter { get; set; }
+
+        public int? CurrentPage { get; set; } = 1;
+
+        public int? EntitiesPerPage { get; set; } = 5;
+
+        public int? TotalPages { get; set; }
     }
 }
