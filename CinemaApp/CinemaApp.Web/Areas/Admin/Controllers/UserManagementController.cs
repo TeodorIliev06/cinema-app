@@ -25,9 +25,7 @@
         [HttpPost]
         public async Task<IActionResult> AssignRole(string userId, string role)
         {
-            var userGuid = Guid.Empty;
-
-            bool isGuidValid = ValidationUtils.IsGuidValid(userId, ref userGuid);
+            bool isGuidValid = ValidationUtils.TryGetGuid(userId, out Guid userGuid);
             if (!isGuidValid)
             {
                 return RedirectToAction(nameof(Index));
@@ -52,9 +50,7 @@
         [HttpPost]
         public async Task<IActionResult> RemoveRole(string userId, string role)
         {
-            var userGuid = Guid.Empty;
-
-            bool isGuidValid = ValidationUtils.IsGuidValid(userId, ref userGuid);
+            bool isGuidValid = ValidationUtils.TryGetGuid(userId, out Guid userGuid);
             if (!isGuidValid)
             {
                 return RedirectToAction(nameof(Index));
@@ -79,9 +75,7 @@
         [HttpPost]
         public async Task<IActionResult> DeleteUser(string userId)
         {
-            var userGuid = Guid.Empty;
-
-            bool isGuidValid = ValidationUtils.IsGuidValid(userId, ref userGuid);
+            bool isGuidValid = ValidationUtils.TryGetGuid(userId, out Guid userGuid);
             if (!isGuidValid)
             {
                 return RedirectToAction(nameof(Index));

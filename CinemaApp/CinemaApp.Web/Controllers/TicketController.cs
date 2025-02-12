@@ -20,11 +20,8 @@
         [Authorize]
         public async Task<IActionResult> BuyTickets(AvailableTicketsViewModel model)
         {
-            var movieGuid = Guid.Empty;
-            bool isMovieGuidValid = ValidationUtils.IsGuidValid(model.MovieId, ref movieGuid);
-
-            var cinemaGuid = Guid.Empty;
-            bool isCinemaGuidValid = ValidationUtils.IsGuidValid(model.CinemaId, ref cinemaGuid);
+            var isMovieGuidValid = ValidationUtils.TryGetGuid(model.MovieId, out Guid movieGuid);
+            var isCinemaGuidValid = ValidationUtils.TryGetGuid(model.CinemaId, out Guid cinemaGuid);
 
             if (!isMovieGuidValid || !isCinemaGuidValid)
 

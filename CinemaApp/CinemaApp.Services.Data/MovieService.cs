@@ -148,9 +148,7 @@
             var entitiesToAdd = new List<CinemaMovie>();
             foreach (var viewModel in model.Cinemas)
             {
-                var cinemaGuid = Guid.Empty;
-                bool isCinemaGuidValid = ValidationUtils.IsGuidValid(viewModel.Id, ref cinemaGuid);
-
+                var isCinemaGuidValid = ValidationUtils.TryGetGuid(viewModel.Id, out Guid cinemaGuid);
                 if (!isCinemaGuidValid)
                 {
                     //TODO: Return enum with error messages
@@ -222,9 +220,7 @@
 
         public async Task<bool> EditMovieAsync(EditMovieFormModel model)
         {
-            var movieGuid = Guid.Empty;
-            bool isMovieGuidValid = ValidationUtils.IsGuidValid(model.Id, ref movieGuid);
-
+            var isMovieGuidValid = ValidationUtils.TryGetGuid(model.Id, out Guid movieGuid);
             if (!isMovieGuidValid)
             {
                 return false;

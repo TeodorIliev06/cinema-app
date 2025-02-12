@@ -64,8 +64,8 @@
                 return View(model);
             }
 
-            bool result = await movieService.AddMovieAsync(model);
-            if (result == false)
+            bool isAdded = await movieService.AddMovieAsync(model);
+            if (!isAdded)
             {
                 this.ModelState.AddModelError(nameof(model.ReleaseDate), $"The release date must be in the following format: {ReleaseDateFormat}");
                 return View(model);
@@ -77,10 +77,8 @@
         [HttpGet]
         public async Task<IActionResult> Details(string? id)
         {
-            var movieGuid = Guid.Empty;
-
-            bool isGuidValid = ValidationUtils.IsGuidValid(id, ref movieGuid);
-            if (!isGuidValid)
+            var isMovieGuidValid = ValidationUtils.TryGetGuid(id, out Guid movieGuid);
+            if (!isMovieGuidValid)
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -104,10 +102,8 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            var movieGuid = Guid.Empty;
-
-            bool isGuidValid = ValidationUtils.IsGuidValid(id, ref movieGuid);
-            if (!isGuidValid)
+            var isMovieGuidValid = ValidationUtils.TryGetGuid(id, out Guid movieGuid);
+            if (!isMovieGuidValid)
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -137,16 +133,14 @@
                 return View(model);
             }
 
-            var movieGuid = Guid.Empty;
-
-            bool isGuidValid = ValidationUtils.IsGuidValid(model.Id, ref movieGuid);
-            if (!isGuidValid)
+            var isMovieGuidValid = ValidationUtils.TryGetGuid(model.Id, out Guid movieGuid);
+            if (!isMovieGuidValid)
             {
                 return RedirectToAction(nameof(Index));
             }
 
-            bool result = await movieService.AddMovieToCinemasAsync(movieGuid, model);
-            if (result == false)
+            bool isAdded = await movieService.AddMovieToCinemasAsync(movieGuid, model);
+            if (!isAdded)
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -165,10 +159,8 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            var movieGuid = Guid.Empty;
-            bool isIdValid = ValidationUtils.IsGuidValid(id, ref movieGuid);
-
-            if (!isIdValid)
+            var isMovieGuidValid = ValidationUtils.TryGetGuid(id, out Guid movieGuid);
+            if (!isMovieGuidValid)
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -234,10 +226,8 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            var movieGuid = Guid.Empty;
-            bool isIdValid = ValidationUtils.IsGuidValid(id, ref movieGuid);
-
-            if (!isIdValid)
+            var isMovieGuidValid = ValidationUtils.TryGetGuid(id, out Guid movieGuid);
+            if (!isMovieGuidValid)
             {
                 return RedirectToAction(nameof(Manage));
             }
@@ -261,10 +251,8 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            var movieGuid = Guid.Empty;
-            bool isIdValid = ValidationUtils.IsGuidValid(model.Id, ref movieGuid);
-
-            if (!isIdValid)
+            var isMovieGuidValid = ValidationUtils.TryGetGuid(model.Id, out Guid movieGuid);
+            if (!isMovieGuidValid)
             {
                 return RedirectToAction(nameof(Manage));
             }

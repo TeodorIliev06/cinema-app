@@ -23,9 +23,8 @@
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetMoviesByCinema(string? id)
         {
-            var cinemaGuid = Guid.Empty;
-            var isIdValid = ValidationUtils.IsGuidValid(id, ref cinemaGuid);
-            if (!isIdValid)
+            var isCinemaGuidValid = ValidationUtils.TryGetGuid(id, out Guid cinemaGuid);
+            if (!isCinemaGuidValid)
             {
                 return BadRequest();
             }
@@ -46,15 +45,13 @@
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAvailableTickets([FromBody] GetAvailableTicketsFormModel model)
         {
-            var cinemaGuid = Guid.Empty;
-            var isCinemaIdValid = ValidationUtils.IsGuidValid(model.CinemaId, ref cinemaGuid);
-            if (!isCinemaIdValid)
+            var isCinemaGuidValid = ValidationUtils.TryGetGuid(model.CinemaId, out Guid cinemaGuid);
+            if (!isCinemaGuidValid)
             {
                 return BadRequest();
             }
 
-            var movieGuid = Guid.Empty;
-            var isMovieGuidValid = ValidationUtils.IsGuidValid(model.MovieId, ref movieGuid);
+            var isMovieGuidValid = ValidationUtils.TryGetGuid(model.MovieId, out Guid movieGuid);
             if (!isMovieGuidValid)
             {
                 return BadRequest();

@@ -56,10 +56,8 @@
         [HttpGet]
         public async Task<IActionResult> Details(string? id)
         {
-            var cinemaGuid = Guid.Empty;
-            bool isIdValid = ValidationUtils.IsGuidValid(id, ref cinemaGuid);
-
-            if (!isIdValid)
+            var isCinemaGuidValid = ValidationUtils.TryGetGuid(id, out Guid cinemaGuid);
+            if (!isCinemaGuidValid)
             {
                 return RedirectToAction(nameof(Index));
             }
@@ -103,10 +101,8 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            var cinemaGuid = Guid.Empty;
-            bool isIdValid = ValidationUtils.IsGuidValid(id, ref cinemaGuid);
-
-            if (!isIdValid)
+            var isCinemaGuidValid = ValidationUtils.TryGetGuid(id, out Guid cinemaGuid);
+            if (!isCinemaGuidValid)
             {
                 return RedirectToAction(nameof(Manage));
             }
@@ -156,10 +152,8 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            var cinemaGuid = Guid.Empty;
-            bool isIdValid = ValidationUtils.IsGuidValid(id, ref cinemaGuid);
-
-            if (!isIdValid)
+            var isCinemaGuidValid = ValidationUtils.TryGetGuid(id, out Guid cinemaGuid);
+            if (!isCinemaGuidValid)
             {
                 return RedirectToAction(nameof(Manage));
             }
@@ -183,10 +177,8 @@
                 return RedirectToAction(nameof(Index));
             }
 
-            var cinemaGuid = Guid.Empty;
-            bool isIdValid = ValidationUtils.IsGuidValid(model.Id, ref cinemaGuid);
-
-            if (!isIdValid)
+            var isCinemaGuidValid = ValidationUtils.TryGetGuid(model.Id, out Guid cinemaGuid);
+            if (!isCinemaGuidValid)
             {
                 return RedirectToAction(nameof(Manage));
             }

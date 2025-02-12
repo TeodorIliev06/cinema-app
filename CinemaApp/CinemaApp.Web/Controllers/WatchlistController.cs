@@ -34,10 +34,8 @@
         [HttpPost]
         public async Task<IActionResult> AddToWatchlist(string? movieId)
         {
-            var movieGuid = Guid.Empty;
-
-            bool isGuidValid = ValidationUtils.IsGuidValid(movieId, ref movieGuid);
-            if (!isGuidValid)
+            var isMovieGuidValid = ValidationUtils.TryGetGuid(movieId, out Guid movieGuid);
+            if (!isMovieGuidValid)
             {
                 return RedirectToAction("Index", "Movie");
             }
@@ -61,11 +59,8 @@
         [HttpPost]
         public async Task<IActionResult> RemoveFromWatchlist(string? movieId)
         {
-            var movieGuid = Guid.Empty;
-
-            bool isGuidValid = ValidationUtils.IsGuidValid(movieId, ref movieGuid);
-
-            if (!isGuidValid)
+            var isMovieGuidValid = ValidationUtils.TryGetGuid(movieId, out Guid movieGuid);
+            if (!isMovieGuidValid)
             {
                 return RedirectToAction("Index", "Movie");
             }
