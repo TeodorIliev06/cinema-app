@@ -18,10 +18,11 @@
   <ItemGroup>
     <ProjectReference Include="..\CinemaApp.Common\CinemaApp.Common.csproj" />
     <ProjectReference Include="..\CinemaApp.Data.Models\CinemaApp.Data.Models.csproj" />
+    <ProjectReference Include="..\CinemaApp.Services.Mapping\CinemaApp.Services.Mapping.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Datasets\" />
+    <Folder Include="Seeding\Datasets\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
 

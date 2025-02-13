@@ -10,6 +10,8 @@ namespace CinemaApp.Common
     {
         public static class Movie
         {
+            public const int IdMinLength = 36;
+            public const int IdMaxLength = 36;
             public const int TitleMaxLength = 50;
             public const int GenreMinLength = 5;
             public const int GenreMaxLength = 20;
