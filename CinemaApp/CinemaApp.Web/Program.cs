@@ -1,5 +1,6 @@
 namespace CinemaApp.Web
 {
+    using CinemaApp.Data.Seeding.DTOs;
     using CinemaApp.Services.Data;
     using CinemaApp.Services.Data.Contracts;
     using Microsoft.AspNetCore.Identity;
@@ -20,6 +21,8 @@ namespace CinemaApp.Web
             string adminEmail = builder.Configuration.GetValue<string>("Administrator:Email")!;
             string adminUsername = builder.Configuration.GetValue<string>("Administrator:Username")!;
             string adminPassword = builder.Configuration.GetValue<string>("Administrator:Password")!;
+            string jsonPath = Path.Combine(AppContext.BaseDirectory,
+                builder.Configuration.GetValue<string>("Seed:MoviesJson")!);
 
             // Add services to the container.
             builder.Services.AddDbContext<CinemaDbContext>(cfg =>
@@ -48,7 +51,9 @@ namespace CinemaApp.Web
 
             var app = builder.Build();
 
-            AutoMapperConfig.RegisterMappings(typeof(ErrorViewModel).Assembly);
+            AutoMapperConfig
+                .RegisterMappings(typeof(ErrorViewModel).Assembly,
+                    typeof(ImportMovieDto).Assembly);
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -67,6 +72,7 @@ namespace CinemaApp.Web
             app.UseAuthorization();
 
             await app.SeedAdminAsync(adminEmail, adminUsername, adminPassword);
+            await app.SeedMoviesAsync(jsonPath);
 
             app.MapControllerRoute(
                 name: "Areas",

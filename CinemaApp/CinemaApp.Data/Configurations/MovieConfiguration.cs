@@ -41,9 +41,6 @@
                 .IsRequired(false)
                 .HasMaxLength(ImageUrlMaxLength)
                 .HasDefaultValue(NoImageUrl);
-
-            builder
-                .SeedDataFromJson("Datasets/movies.json");
         }
     }
 }

@@ -9,7 +9,8 @@
         public static void SeedDataFromJson<T>(this EntityTypeBuilder<T> builder, string relativePath)
             where T : class
         {
-            string path = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "CinemaApp.Data", relativePath);
+            string path = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "CinemaApp.Data",
+                "Seeding", relativePath);
             string data = File.ReadAllText(path);
 
             var entities = JsonSerializer.Deserialize<List<T>>(data);
