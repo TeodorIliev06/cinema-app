@@ -33,5 +33,11 @@ namespace CinemaApp.Common
             public const string InvalidTicketsCount = "Tickets count should be a positive number!";
             public const string InvalidTicketPrice = "Ticket price should be positive";
         }
+
+        public static class Seeding
+        {
+            public static readonly string InvalidMethodName = "Seeding method {0} not found in DbSeeder";
+            public static readonly string ExecutionError = "Error executing {0}: {1}";
+        }
     }
 }

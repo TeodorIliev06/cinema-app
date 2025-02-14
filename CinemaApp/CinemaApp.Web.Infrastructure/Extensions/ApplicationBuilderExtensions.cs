@@ -1,11 +1,12 @@
 ﻿namespace CinemaApp.Web.Infrastructure.Extensions
 {
-    using CinemaApp.Data.Seeding;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
 
     using Data;
+    using CinemaApp.Data.Seeding;
+    using static Common.ErrorMessages.Seeding;
 
     public static class ApplicationBuilderExtensions
     {
@@ -34,12 +35,37 @@
             return app;
         }
 
-        public static async Task<IApplicationBuilder> SeedMoviesAsync(this IApplicationBuilder app, string jsonPath)
+        public static async Task<IApplicationBuilder> SeedDataAsync(
+            this IApplicationBuilder app,
+            params SeederConfiguration[] configurations)
         {
             await using var scope = app.ApplicationServices.CreateAsyncScope();
             var serviceProvider = scope.ServiceProvider;
 
-            await DbSeeder.SeedMoviesAsync(serviceProvider, jsonPath);
+            Type seederType = typeof(DbSeeder);
+            foreach (var cfg in configurations)
+            {
+                try
+                {
+                    var methodInfo = seederType.GetMethod(cfg.MethodName);
+
+                    if (methodInfo == null)
+                    {
+                        throw new InvalidOperationException(string.Format(InvalidMethodName, cfg.MethodName));
+                    }
+
+                    await (Task)methodInfo.Invoke(null, new object[]
+                    {
+                        serviceProvider,
+                        cfg.JsonPath
+                    })!;
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(ExecutionError, cfg.MethodName, e.Message);
+                    throw;
+                }
+            }
 
             return app;
         }

@@ -1,5 +1,6 @@
 namespace CinemaApp.Web
 {
+    using CinemaApp.Data.Seeding;
     using CinemaApp.Data.Seeding.DTOs;
     using CinemaApp.Services.Data;
     using CinemaApp.Services.Data.Contracts;
@@ -72,7 +73,14 @@ namespace CinemaApp.Web
             app.UseAuthorization();
 
             await app.SeedAdminAsync(adminEmail, adminUsername, adminPassword);
-            await app.SeedMoviesAsync(jsonPath);
+
+            await app.SeedDataAsync(
+                new SeederConfiguration()
+                {
+                    MethodName = "SeedMoviesAsync",
+                    JsonPath = jsonPath
+                }
+            );
 
             app.MapControllerRoute(
                 name: "Areas",
