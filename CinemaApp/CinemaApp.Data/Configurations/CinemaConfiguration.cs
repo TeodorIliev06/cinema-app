@@ -23,9 +23,6 @@
                 .Property(c => c.Location)
                 .IsRequired()
                 .HasMaxLength(LocationMaxLength);
-
-            builder
-                .SeedDataFromJson("Datasets/cinemas.json");
         }
     }
 }

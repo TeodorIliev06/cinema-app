@@ -1,4 +1,6 @@
 ﻿using System.Numerics;
+using static CinemaApp.Common.ErrorMessages;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CinemaApp.Common
 {
@@ -14,6 +16,7 @@ namespace CinemaApp.Common
         {
             public const string RemoveFromCinemaNotSuccessfulMessage = "An unexpected error occurred while deleting the cinema. Please try again later!";
             public const string EditCinemaNotSuccessfulMessage = "Unexpected error occured while trying to update the cinema! Please contact an administrator.";
+            public static readonly string CinemaSeedFail = "Error occurred while seeding cinemas: {0}";
         }
 
         public static class CinemaMovie
@@ -26,6 +29,7 @@ namespace CinemaApp.Common
         {
             public const string RemoveFromMovieNotSuccessfulMessage = "An unexpected error occurred while deleting the movie. Please try again later!";
             public const string EditMovieNotSuccessfulMessage = "Unexpected error occured while trying to update the movie! Please contact an administrator.";
+            public static readonly string MovieSeedFail = "Error occurred while seeding movies: {0}";
         }
 
         public static class Ticket

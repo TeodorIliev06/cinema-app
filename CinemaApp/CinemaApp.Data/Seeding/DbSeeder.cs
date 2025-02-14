@@ -7,22 +7,20 @@ using System.Threading.Tasks;
 namespace CinemaApp.Data.Seeding
 {
     using System.Text.Json;
-    using CinemaApp.Data.Models;
+    using System.Globalization;
+
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
 
-    using CinemaApp.Data.Seeding.DTOs;
     using Common;
+    using CinemaApp.Data.Models;
     using CinemaApp.Services.Mapping;
-    using System.Globalization;
+    using CinemaApp.Data.Seeding.DTOs;
 
     public static class DbSeeder
     {
-        public static async Task SeedMoviesAsync(IServiceProvider serviceProvider, string jsonPath)
+        public static async Task SeedMoviesAsync(CinemaDbContext dbContext, string jsonPath)
         {
-            await using var dbContext = serviceProvider
-                .GetRequiredService<CinemaDbContext>();
-
             var allMovies = await dbContext.Movies
                 .ToArrayAsync();
 
@@ -78,7 +76,60 @@ namespace CinemaApp.Data.Seeding
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error occurred while seeding movies: {e.Message}");
+                Console.WriteLine(ErrorMessages.Movie.MovieSeedFail, e.Message);
+                throw;
+            }
+        }
+
+        public static async Task SeedCinemasAsync(CinemaDbContext dbContext, string jsonPath)
+        {
+            var allCinemas = await dbContext.Cinemas
+                .ToArrayAsync();
+
+            try
+            {
+                string jsonInput = await File
+                    .ReadAllTextAsync(jsonPath, Encoding.ASCII, CancellationToken.None);
+
+                var cinemaDtos = JsonSerializer
+                    .Deserialize<ImportCinemaDto[]>(jsonInput);
+
+                var cinemasToAdd = new List<Cinema>();
+
+                foreach (var cinemaDto in cinemaDtos)
+                {
+                    if (!ValidationUtils.IsValid(cinemaDto))
+                    {
+                        continue;
+                    }
+
+                    var isCinemaGuidValid = ValidationUtils.TryGetGuid(cinemaDto.Id, out Guid cinemaGuid);
+                    if (!isCinemaGuidValid)
+                    {
+                        continue;
+                    }
+
+                    if (allCinemas.Any(m =>
+                            m.Id.ToString().ToLowerInvariant() ==
+                            cinemaGuid.ToString().ToLowerInvariant()))
+                    {
+                        continue;
+                    }
+
+                    var cinema = AutoMapperConfig.MapperInstance.Map<Cinema>(cinemaDto);
+
+                    cinemasToAdd.Add(cinema);
+                }
+
+                if (cinemasToAdd.Any())
+                {
+                    await dbContext.Cinemas.AddRangeAsync(cinemasToAdd);
+                    await dbContext.SaveChangesAsync();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(ErrorMessages.Cinema.CinemaSeedFail, e.Message);
                 throw;
             }
         }

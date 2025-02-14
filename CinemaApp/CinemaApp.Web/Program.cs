@@ -22,8 +22,10 @@ namespace CinemaApp.Web
             string adminEmail = builder.Configuration.GetValue<string>("Administrator:Email")!;
             string adminUsername = builder.Configuration.GetValue<string>("Administrator:Username")!;
             string adminPassword = builder.Configuration.GetValue<string>("Administrator:Password")!;
-            string jsonPath = Path.Combine(AppContext.BaseDirectory,
+            string movieJsonPath = Path.Combine(AppContext.BaseDirectory,
                 builder.Configuration.GetValue<string>("Seed:MoviesJson")!);
+            string cinemaJsonPath = Path.Combine(AppContext.BaseDirectory,
+                builder.Configuration.GetValue<string>("Seed:CinemasJson")!);
 
             // Add services to the container.
             builder.Services.AddDbContext<CinemaDbContext>(cfg =>
@@ -78,7 +80,12 @@ namespace CinemaApp.Web
                 new SeederConfiguration()
                 {
                     MethodName = "SeedMoviesAsync",
-                    JsonPath = jsonPath
+                    JsonPath = movieJsonPath
+                },
+                new SeederConfiguration()
+                {
+                    MethodName = "SeedCinemasAsync",
+                    JsonPath = cinemaJsonPath
                 }
             );
 

@@ -30,6 +30,8 @@ namespace CinemaApp.Common
 
         public static class Cinema
         {
+            public const int IdMinLength = 36;
+            public const int IdMaxLength = 36;
             public const int NameMinLength = 5;
             public const int NameMaxLength = 50;
             public const int LocationMinLength = 3;

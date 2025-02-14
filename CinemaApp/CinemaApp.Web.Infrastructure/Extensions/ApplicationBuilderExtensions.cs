@@ -41,6 +41,7 @@
         {
             await using var scope = app.ApplicationServices.CreateAsyncScope();
             var serviceProvider = scope.ServiceProvider;
+            var dbContext = serviceProvider.GetRequiredService<CinemaDbContext>();
 
             Type seederType = typeof(DbSeeder);
             foreach (var cfg in configurations)
@@ -56,7 +57,7 @@
 
                     await (Task)methodInfo.Invoke(null, new object[]
                     {
-                        serviceProvider,
+                        dbContext,
                         cfg.JsonPath
                     })!;
                 }

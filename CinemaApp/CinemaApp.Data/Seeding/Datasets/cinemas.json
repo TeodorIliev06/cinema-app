@@ -23,5 +23,20 @@
     "Id": "fb4c8e3d-4a53-4c67-95b9-e3d4c912f8a7",
     "Name": "Maple Leaf Theater",
     "Location": "202 Maple Avenue, Toronto"
+  },
+  {
+    "Id": "e7c9b4d8-6f3a-4b95-8c4e-a9d3f8b6c7e5",
+    "Name": "Starlight Cinema",
+    "Location": "303 Starlight Drive, San Francisco"
+  },
+  {
+    "Id": "a4f8b9c3-7d6e-4c85-94b7-d3c9e6b4f7a8",
+    "Name": "Heritage Filmhouse",
+    "Location": "404 Historic Lane, Boston"
+  },
+  {
+    "Id": "c8d9e7b6-5a3c-4f95-9b4d-e6c7f8a3d4b9",
+    "Name": "Silver Screen Multiplex",
+    "Location": "505 Silver Street, Seattle"
   }
 ]
