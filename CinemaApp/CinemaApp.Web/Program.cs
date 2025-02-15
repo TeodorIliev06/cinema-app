@@ -22,10 +22,6 @@ namespace CinemaApp.Web
             string adminEmail = builder.Configuration.GetValue<string>("Administrator:Email")!;
             string adminUsername = builder.Configuration.GetValue<string>("Administrator:Username")!;
             string adminPassword = builder.Configuration.GetValue<string>("Administrator:Password")!;
-            string movieJsonPath = Path.Combine(AppContext.BaseDirectory,
-                builder.Configuration.GetValue<string>("Seed:MoviesJson")!);
-            string cinemaJsonPath = Path.Combine(AppContext.BaseDirectory,
-                builder.Configuration.GetValue<string>("Seed:CinemasJson")!);
 
             // Add services to the container.
             builder.Services.AddDbContext<CinemaDbContext>(cfg =>
@@ -75,19 +71,7 @@ namespace CinemaApp.Web
             app.UseAuthorization();
 
             await app.SeedAdminAsync(adminEmail, adminUsername, adminPassword);
-
-            await app.SeedDataAsync(
-                new SeederConfiguration()
-                {
-                    MethodName = "SeedMoviesAsync",
-                    JsonPath = movieJsonPath
-                },
-                new SeederConfiguration()
-                {
-                    MethodName = "SeedCinemasAsync",
-                    JsonPath = cinemaJsonPath
-                }
-            );
+            await app.SeedAllDataAsync();
 
             app.MapControllerRoute(
                 name: "Areas",
@@ -98,7 +82,7 @@ namespace CinemaApp.Web
             app.MapRazorPages();
 
             app.ApplyMigrations();
-            app.Run();
+            await app.RunAsync();
         }
     }
 }

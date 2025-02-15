@@ -42,6 +42,7 @@ namespace CinemaApp.Common
         {
             public static readonly string InvalidMethodName = "Seeding method {0} not found in DbSeeder";
             public static readonly string ExecutionError = "Error executing {0}: {1}";
+            public const string NoSeedingPaths = "No seeding paths configured in appsettings.json";
         }
     }
 }

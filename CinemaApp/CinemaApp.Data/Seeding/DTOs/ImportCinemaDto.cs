@@ -1,6 +1,7 @@
 ﻿namespace CinemaApp.Data.Seeding.DTOs
 {
     using System.ComponentModel.DataAnnotations;
+
     using AutoMapper;
     using CinemaApp.Data.Models;
     using CinemaApp.Services.Mapping;

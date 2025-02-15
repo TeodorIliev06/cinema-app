@@ -1,11 +1,15 @@
 ﻿namespace CinemaApp.Web.Infrastructure.Extensions
 {
+    using System.Reflection;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
     using Data;
+    using Common;
     using CinemaApp.Data.Seeding;
+
     using static Common.ErrorMessages.Seeding;
 
     public static class ApplicationBuilderExtensions
@@ -69,6 +73,58 @@
             }
 
             return app;
+        }
+
+        public static async Task<IApplicationBuilder> SeedAllDataAsync(this IApplicationBuilder app)
+        {
+            using var scope = app.ApplicationServices.CreateScope();
+            var configuration = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+
+            var seedingPaths = GetSeedingPaths(configuration);
+
+            if (!seedingPaths.Any())
+            {
+                throw new InvalidOperationException(NoSeedingPaths);
+            }
+
+            var configurations = seedingPaths
+                .Select(kvp => new SeederConfiguration()
+                {
+                    MethodName = kvp.Key,
+                    JsonPath = kvp.Value
+                }).ToArray();
+
+            await app.SeedDataAsync(configurations);
+            return app;
+        }
+
+        private static Dictionary<string, string> GetSeedingPaths(IConfiguration configuration)
+        {
+            var seedSection = configuration.GetSection(ApplicationConstants.DefaultSeedConfigurationSection);
+            var seedingPaths = new Dictionary<string, string>();
+
+            var seederMethods = typeof(DbSeeder)
+                .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .Where(m => m.Name.StartsWith("Seed") && m.Name.EndsWith("Async"))
+                .Select(m => m.Name)
+                .ToList();
+
+            foreach (var methodName in seederMethods)
+            {
+                // Convert method name to configuration key
+                var cfgKey = methodName
+                                 .Replace("Seed", "")
+                                 .Replace("Async", "")
+                                 + "Json";
+
+                var jsonPath = seedSection[cfgKey];
+                if (!string.IsNullOrEmpty(jsonPath))
+                {
+                    seedingPaths[methodName] = Path.Combine(AppContext.BaseDirectory, jsonPath);
+                }
+            }
+
+            return seedingPaths;
         }
     }
 }

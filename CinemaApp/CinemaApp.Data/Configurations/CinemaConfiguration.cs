@@ -4,7 +4,6 @@
     using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
     using Models;
-    using Extensions;
 
     using static Common.EntityValidationConstants.Cinema;
     public class CinemaConfiguration : IEntityTypeConfiguration<Cinema>
