@@ -1,11 +1,14 @@
 ﻿namespace CinemaApp.Web.Controllers
 {
-    using Common;
-    using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using Services.Data.Contracts;
+    using Microsoft.AspNetCore.Authorization;
+
+    using Common;
     using Web.ViewModels.Cinema;
+    using Services.Data.Contracts;
+
     using static Common.ErrorMessages.Cinema;
+    using static Common.NotificationMessages;
 
     public class CinemaController(
         ICinemaService cinemaService,
@@ -27,6 +30,7 @@
             bool isManager = await this.IsUserManagerAsync();
             if (!isManager)
             {
+                TempData[ErrorMessage] = NotificationError.UnauthorizedCinemaCreation;
                 return RedirectToAction(nameof(Index));
             }
 
